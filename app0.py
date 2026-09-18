@@ -5,12 +5,12 @@ from mesa.visualization import SolaraViz
 
 
 # SolaraViz가 생성자를 검사할 수 있도록 인자를 명시합니다.
-class BasicModel(Model):
+class MyModel(Model):
     def __init__(self):
         super().__init__()
 
 
-model = BasicModel()
+model = MyModel()
 
 # 모델을 조작할 화면을 만듭니다.
 page = SolaraViz(model, name="Mesa 기본 화면")
