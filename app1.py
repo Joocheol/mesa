@@ -1,4 +1,4 @@
-"""실행: solara run app1.py --host 127.0.0.1 --port 8766"""
+"""실행: solara run app1.py --host localhost --port 8766"""
 
 from mesa import Model
 from mesa.discrete_space import OrthogonalMooreGrid

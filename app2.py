@@ -1,4 +1,4 @@
-"""실행: solara run app2.py --host 127.0.0.1 --port 8767"""
+"""실행: solara run app2.py --host localhost --port 8767"""
 
 from mesa import Model
 from mesa.discrete_space import CellAgent, OrthogonalMooreGrid
