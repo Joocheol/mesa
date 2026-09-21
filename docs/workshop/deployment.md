@@ -13,7 +13,7 @@ node scripts/dev_server.mjs 8787
 
 ## GitHub Pages (정적, 서버 없음)
 
-`main`에 푸시하면 `.github/workflows/pages.yml`이 테스트 후 `site/`를 Pages에 배포한다. 처음 한 번은 저장소 Settings → Pages에서 Source가 "GitHub Actions"인지 확인한다(워크플로가 `enablement: true`로 자동 설정을 시도한다). 이 배포에는 `/api/*`가 없으므로 팀 투표·리더보드는 동작하지 않고, 각 라운드 페이지의 "오프라인 공개"와 R3의 "오프라인 봉인 해제"를 강사가 누른다.
+`main`에 푸시하면 `.github/workflows/pages.yml`이 테스트 후 `site/`를 `gh-pages` 브랜치에 밀어 넣고, GitHub Pages가 그 브랜치를 https://joocheol.github.io/mesa/ 로 서빙한다. 처음 한 번은 저장소 Settings → Pages에서 Source가 "Deploy from a branch · gh-pages · / (root)"인지 확인한다. 이 배포에는 `/api/*`가 없으므로 팀 투표·리더보드는 동작하지 않고, 각 라운드 페이지의 "오프라인 공개"와 R3의 "오프라인 봉인 해제"를 강사가 누른다.
 
 ## Sites + D1 배포 (실시간 투표 포함)
 
