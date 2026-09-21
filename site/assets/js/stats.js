@@ -128,6 +128,19 @@ export function runsAnalysis(seq) {
   return { n, heads, runs, longest, expectedRuns, sdRuns, zRuns, expectedLongest, alternationRate };
 }
 
+// Continuous score used to compare two sequences in the opening game.
+// This is deliberately an index, not a probability: higher means that the
+// sequence has more of the habits people commonly show when imitating a coin.
+export function humanIndex(analysis) {
+  if (!analysis) return { raw: 0, value: 0, balanceZ: 0, runSignal: 0, longestSignal: 0 };
+  const balanceZ = Math.abs(analysis.heads - analysis.n / 2) / Math.sqrt(analysis.n / 4);
+  const runSignal = analysis.zRuns;
+  const longestSignal = analysis.expectedLongest - analysis.longest;
+  const raw = 1.5 * runSignal + 0.9 * longestSignal - 0.45 * balanceZ;
+  const value = Math.round(100 / (1 + Math.exp(-raw / 2)));
+  return { raw, value, balanceZ, runSignal, longestSignal };
+}
+
 // A transparent "human-ness" verdict: too many runs (alternating), too short a longest run.
 export function humanVerdict(analysis) {
   if (!analysis) return { score: 0, label: "입력 없음" };

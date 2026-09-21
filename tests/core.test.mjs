@@ -3,7 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { seedRandom, normal, standardizedT, hashSeed } from "../site/assets/js/rng.js";
-import { mean, sd, excessKurtosis, diagnostics, runsAnalysis, humanVerdict, brier, logReturns, pathFromReturns, autocorrelation } from "../site/assets/js/stats.js";
+import { mean, sd, excessKurtosis, diagnostics, runsAnalysis, humanIndex, humanVerdict, brier, logReturns, pathFromReturns, autocorrelation } from "../site/assets/js/stats.js";
 import { gbmReturns, tReturns, fitGarchT, garchReturns, bootstrapReturns, shuffleReturns, repeatedInvestment } from "../site/assets/js/models.js";
 import { clearAuction, settle, validateOrder } from "../site/assets/js/auction.js";
 import { runMarket, abmChecks, TEMPLATES } from "../site/assets/js/abm.js";
@@ -94,6 +94,26 @@ test("runs analysis separates alternating human sequences from coin flips", () =
   let coinLike = 0;
   for (let i = 0; i < 50; i += 1) { const seq = Array.from({ length: 30 }, () => (rng() < 0.5 ? "H" : "T")); if (humanVerdict(runsAnalysis(seq)).score < 3) coinLike += 1; }
   assert.ok(coinLike >= 40, `coin sequences mostly pass (${coinLike}/50)`);
+});
+
+test("opening coin game uses a continuous comparison and a stable first-round example", () => {
+  const human = "HTHTHHTHTHTHTTHTHTHHTHTHTHTHTH".split("");
+  const rng = seedRandom(10);
+  const coin = Array.from({ length: 30 }, () => (rng() < 0.5 ? "H" : "T"));
+  assert.ok(humanIndex(runsAnalysis(human)).raw > humanIndex(runsAnalysis(coin)).raw);
+
+  const simulation = seedRandom(20260921);
+  let correct = 0;
+  for (let round = 0; round < 1000; round += 1) {
+    const person = [simulation() < 0.5 ? "H" : "T"];
+    while (person.length < 30) {
+      const previous = person.at(-1);
+      person.push(simulation() < 0.60 ? (previous === "H" ? "T" : "H") : previous);
+    }
+    const fair = Array.from({ length: 30 }, () => (simulation() < 0.5 ? "H" : "T"));
+    if (humanIndex(runsAnalysis(person)).raw > humanIndex(runsAnalysis(fair)).raw) correct += 1;
+  }
+  assert.ok(correct >= 750, `detector should win most blind first rounds (${correct}/1000)`);
 });
 
 test("three-category Brier reward is proper at the extremes", () => {

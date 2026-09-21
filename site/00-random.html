@@ -24,15 +24,16 @@
     <div class="card">
       <p class="eyebrow">B · 진짜 동전</p>
       <h3>난수 생성기가 던진 30개</h3>
-      <p class="small muted">실제 동전을 던져 적어도 됩니다. 시드를 바꾸면 다른 동전이 나옵니다.</p>
-      <div class="actions"><button class="button" type="button" data-flip>동전 30번 던지기</button><label style="margin:0" class="small">시드 <input type="number" data-seed value="7" style="width:90px;display:inline-block"></label></div>
+      <p class="small muted">실제 동전을 던져 적어도 됩니다. 같은 시드는 같은 결과를 만들고, 시드를 바꾸면 다른 동전이 나옵니다.</p>
+      <div class="actions"><button class="button" type="button" data-flip>동전 30번 던지기</button><label style="margin:0" class="small">시드 <input type="number" data-seed value="10" style="width:90px;display:inline-block"></label></div>
       <div class="seq" data-seq-coin></div>
     </div>
   </section>
 
   <section class="section card highlight">
-    <div class="section-head"><div><p class="eyebrow">검사</p><h2>어느 쪽이 사람인가?</h2></div><button class="button primary" type="button" id="analyze">검사 실행</button></div>
-    <p class="small muted">검사는 두 가지만 봅니다. ① <strong>교대 횟수(runs)</strong>: 공정한 동전은 30개에서 평균 15.5번 앞/뒤가 바뀝니다. ② <strong>최장 연속</strong>: 30개면 같은 면이 5번쯤 연달아 나오는 것이 정상입니다. 사람은 "너무 규칙적으로 보일까 봐" 교대를 자주 하고 긴 연속을 피합니다.</p>
+    <div class="section-head"><div><p class="eyebrow">검사</p><h2>어느 쪽이 사람인가?</h2></div><div class="actions"><button class="button primary" type="button" id="analyze">첫 판정 실행</button><button class="button hidden" type="button" id="retry">새 수열로 다시 도전</button></div></div>
+    <p class="small muted">먼저 수열을 완성해 판정하세요. 검사 규칙은 첫 제출 뒤 공개됩니다.</p>
+    <p class="small muted hidden" id="detector-rules">검사는 세 가지를 함께 비교합니다. ① <strong>연속 묶음 수(runs)</strong>: 공정한 동전 30개는 평균 15.5개 묶음, 즉 평균 14.5번 앞·뒤가 바뀝니다. ② <strong>최장 연속</strong>: 같은 면이 5번쯤 이어져도 이상하지 않습니다. ③ <strong>앞·뒤 균형</strong>: 사람은 정확한 반반을 지나치게 선호합니다. ‘사람다움 지수’는 비교용 점수이지 사람일 확률이 아닙니다. 규칙을 본 뒤 다시 도전하면 검사를 속일 수도 있습니다 — 알려진 검사는 게임의 대상이 된다는 것이 두 번째 교훈입니다.</p>
     <div class="grid two" id="analysis"></div>
     <div id="verdict" class="status hidden"></div>
   </section>
