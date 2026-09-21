@@ -86,6 +86,6 @@ $("#add-team").addEventListener("click", () => {
 });
 $("#reset").addEventListener("click", () => { if (!confirm("시장 기록을 모두 지우고 1라운드로 돌아갑니다.")) return; market = defaultMarket(); persist(); renderOrders(); renderHistory(); renderRules(); $("#preview-table").innerHTML = ""; });
 $("#export").addEventListener("click", () => download("classroom-market.json", JSON.stringify(market, null, 2), "application/json"));
-$("#save-rules").addEventListener("click", () => { saveState({ teamRules: Object.fromEntries($$("[data-rule]").map((t) => [t.dataset.rule, t.value.trim()])), teamRoles: Object.fromEntries(market.teams.map((t) => [t.id, { name: t.name, role: t.role }])) }); $("#rules-status").textContent = "저장했습니다 — 3b에서 불러옵니다."; markComplete("market"); });
+$("#save-rules").addEventListener("click", () => { saveState({ teamRules: Object.fromEntries($$("[data-rule]").map((t) => [t.dataset.rule, t.value.trim()])), teamRoles: Object.fromEntries(market.teams.map((t) => [t.id, { name: t.name, role: t.role }])) }); $("#rules-status").textContent = "저장했습니다 — 3c에서 불러옵니다."; markComplete("market"); });
 
 renderOrders(); renderHistory(); renderRules();
