@@ -1,0 +1,19 @@
+{
+  "instrument": "KOSPI 200 지수",
+  "symbol": "^KS200",
+  "market": "KRX (지수)",
+  "currency": "KRW (지수 포인트)",
+  "frequency": "daily",
+  "price_definition": "지수 종가 (Close; 지수이므로 수정 종가 개념 없음)",
+  "source_name": "Yahoo Finance (yfinance 다운로드, Joocheol/KOSPI200 저장소 Index.csv)",
+  "source_url": "https://finance.yahoo.com/quote/%5EKS200/history/",
+  "acquired_at": "2025-05-05",
+  "observation_start": "2018-11-23",
+  "observation_end": "2024-12-30",
+  "observations": 1500,
+  "skipped_null_rows": 0,
+  "source_csv_sha256": "1c0c2ed785cc5870c3b7c405ca7d7518894e36394b536e244ec54f44e090eac0",
+  "csv_sha256": "0c98780127f0465268d7214b2ba28dbf85727d221abc7ff9dc6dbeb7319c5936",
+  "transformations": "yfinance 다중 헤더 CSV(Index.csv)에서 Date·Close 열 추출, 휴장일 빈 행 제외, 마지막 1,500거래일만 사용, 소수 4자리 반올림",
+  "usage_note": "교육용 고정 스냅샷. 재배포·상업적 이용은 원 출처 이용조건을 별도 확인하세요."
+}

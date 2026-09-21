@@ -12,7 +12,7 @@ node scripts/dev_server.mjs 8787      # http://127.0.0.1:8787 · 강사 비밀�
 
 | 라운드 | 무기 | 실제 구간 |
 |---|---|---|
-| R1 (1교시 끝) | 차트만 | 검증 구간 마지막 150일 |
+| R1 (1교시 끝) | 차트만 | 추정 구간 마지막 150일 |
 | R2 (2교시 끝) | 검사표 숫자만 | 검증 구간 전체 |
 | R3 (4교시) | 차트 + 검사표 | **봉인된 최종 20%** — 강사가 열기 전엔 보이지 않음 |
 
@@ -39,7 +39,7 @@ node scripts/dev_server.mjs 8787      # http://127.0.0.1:8787 · 강사 비밀�
 site/                 정적 사이트 (외부 CDN 없음, ES 모듈)
   assets/js/          rng · stats · models(GBM/t/GARCH-t/bootstrap) · auction · abm · chart · rounds · classroom
   assets/js/pages/    페이지별 스크립트
-  assets/data/        SK하이닉스 1,000거래일 스냅샷 + 메타데이터, LLM 사전 생성 응답
+  assets/data/        KOSPI 200(활성)·SK하이닉스 스냅샷 + 메타데이터, dataset.json, LLM 사전 생성 응답
 worker/index.js       팀 투표·점수·라운드 상태 API (Workers 스타일 fetch, D1)
 drizzle/              D1 스키마
 scripts/              dev_server.mjs (node:sqlite로 D1 흉내), build_sites_worker.py (배포 번들)
@@ -51,7 +51,17 @@ docs/workshop/        강사 진행안 · 활동지 · 역할 카드 · 경매 �
 
 ## 데이터
 
-`site/assets/data/sk-hynix-000660-daily.csv` — SK하이닉스(000660) 2022‑08‑17 ~ 2026‑09‑18 일별 종가 1,000개, 네이버 금융 공개 차트 시세에서 2026‑09‑20 취득(수정주가 아님). 시간순 60/20/20으로 나누어 추정 구간에서만 모수를 정하고, 최종 20%는 R3까지 봉인한다. 교육용 고정 스냅샷이며 재배포·상업적 이용 조건은 원 출처를 확인해야 한다. `date,close` 열을 가진 다른 CSV로 교체할 수 있다(`data.js`).
+기본 스냅샷은 **KOSPI 200 지수**(`^KS200`, Yahoo Finance) 마지막 1,500거래일(2018‑11‑23 ~ 2024‑12‑30)이다: `site/assets/data/kospi200-daily.csv`. 추정 구간에 2020년 급락, 봉인 구간에 2024년 8월 급락이 들어 있어 두꺼운 꼬리·변동성 군집이 실제 데이터에서 드러난다. 시간순 60/20/20으로 나누어 추정 구간에서만 모수를 정하고, 최종 20%는 R3까지 봉인한다. SK하이닉스(000660) 스냅샷도 함께 들어 있다.
+
+활성 데이터는 `site/assets/data/dataset.json`이 가리킨다. Yahoo Finance에서 새로 내려받은 CSV(`Date, …, Close, Adj Close`)로 갱신하려면:
+
+```bash
+python3 scripts/prepare_snapshot.py ~/Downloads/^KS200.csv --name kospi200 \
+  --instrument "KOSPI 200 지수" --symbol "^KS200" --price close --activate
+npm test   # 해시·순서 검사
+```
+
+교육용 고정 스냅샷이며 재배포·상업적 이용 조건은 원 출처를 확인해야 한다.
 
 ## 실행·검증·배포
 
@@ -61,7 +71,7 @@ node scripts/dev_server.mjs 8787           # 로컬 수업 서버 (in-memory D1)
 python3 scripts/build_sites_worker.py      # dist/server/index.js + dist/.openai/{hosting.json,drizzle/}
 ```
 
-배포 시 환경 비밀값 `INSTRUCTOR_PASSWORD_HASH`(sha256 hex)와 `SESSION_SIGNING_SECRET`을 설정한다. 저장소에는 비밀값이 없다. 강사 콘솔은 수업 진행 도구이며 보안 수준의 비밀 유지를 주장하지 않는다.
+`main`에 푸시하면 GitHub Actions가 테스트를 돌린 뒤 `site/`를 **GitHub Pages**에 배포한다(정적 · 투표 서버 없음 → 각 라운드의 "오프라인 공개" 버튼 사용). 실시간 팀 투표·리더보드까지 쓰려면 `dist/`를 Sites + D1에 배포하고 환경 비밀값 `INSTRUCTOR_PASSWORD_HASH`(sha256 hex)와 `SESSION_SIGNING_SECRET`을 설정한다. 저장소에는 비밀값이 없다. 강사 콘솔은 수업 진행 도구이며 보안 수준의 비밀 유지를 주장하지 않는다. 자세한 절차는 [`docs/workshop/deployment.md`](docs/workshop/deployment.md).
 
 ## Mesa 입문 예제
 

@@ -16,7 +16,7 @@ try {
   $("[data-data-name]").textContent = `${meta.instrument || "실제 주가"} (${meta.symbol || ""})`;
   $("[data-data-range]").textContent = `${rows[0].date} ~ ${rows[rows.length - 1].date}`;
   $("[data-data-count]").textContent = rows.length.toLocaleString();
-  $("[data-data-last]").textContent = `${rows[rows.length - 1].close.toLocaleString()}원`;
+  $("[data-data-last]").textContent = rows[rows.length - 1].close.toLocaleString("ko-KR", { maximumFractionDigits: 2 });
   $("[data-meta-instrument]").textContent = `${meta.instrument || "—"} · ${meta.market || ""} · ${meta.currency || ""}`;
   const src = $("[data-meta-source]");
   src.textContent = `${meta.source_name || "—"} · ${meta.acquired_at || ""}`;
@@ -24,6 +24,7 @@ try {
   $("[data-meta-price]").textContent = meta.price_definition || "—";
   $("[data-meta-split]").textContent = `추정 ${split.nTrain}일 (${split.trainRange[0]}~${split.trainRange[1]}) · 검증 ${split.nVal}일 · 최종평가 ${split.nTest}일 (봉인)`;
   $("[data-meta-hash]").textContent = meta.csv_sha256 || "—";
+  const dl = $("[data-csv-download]"); if (dl) dl.href = `assets/data/${meta.csv_file}`;
   const closes = open.rows.map((r) => r.close / open.rows[0].close * 100);
   lineChart($("[data-home-chart]"), [{ values: closes, width: 1.8 }], { log: true, xTicks: [{ value: 0, label: open.rows[0].date.slice(0, 7) }, { value: closes.length - 1, label: open.rows[open.rows.length - 1].date.slice(0, 7) }] });
 } catch (error) {

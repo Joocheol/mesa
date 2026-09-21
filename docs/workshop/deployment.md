@@ -11,7 +11,11 @@ node scripts/dev_server.mjs 8787
 - 같은 네트워크의 참가자 노트북이 강사 노트북 IP:8787로 접속하면 실시간 투표가 동작한다.
 - 서버 없이 `python3 -m http.server --directory site`로만 열어도 각 팀 화면은 동작한다. 정답 공개는 각 라운드 페이지의 "오프라인 공개", R3는 "오프라인 봉인 해제"를 강사가 누른다.
 
-## Sites + D1 배포
+## GitHub Pages (정적, 서버 없음)
+
+`main`에 푸시하면 `.github/workflows/pages.yml`이 테스트 후 `site/`를 Pages에 배포한다. 처음 한 번은 저장소 Settings → Pages에서 Source가 "GitHub Actions"인지 확인한다(워크플로가 `enablement: true`로 자동 설정을 시도한다). 이 배포에는 `/api/*`가 없으므로 팀 투표·리더보드는 동작하지 않고, 각 라운드 페이지의 "오프라인 공개"와 R3의 "오프라인 봉인 해제"를 강사가 누른다.
+
+## Sites + D1 배포 (실시간 투표 포함)
 
 ```bash
 python3 scripts/build_sites_worker.py

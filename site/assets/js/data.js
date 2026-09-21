@@ -3,24 +3,26 @@
 import { logReturns, mean, sd } from "./stats.js";
 import { fitGarchT } from "./models.js";
 
-const CSV = "assets/data/sk-hynix-000660-daily.csv";
-const META = "assets/data/sk-hynix-000660-metadata.json";
+// assets/data/dataset.json points at the active snapshot (see scripts/prepare_snapshot.py).
+const DATASET = "assets/data/dataset.json";
 const SPLIT = { train: 0.6, validation: 0.2 };
 
 let cache = null;
 
+// Accepts our own date,close files and raw Yahoo Finance exports (Date, …, Close, Adj Close, Volume).
 function parseCsv(text) {
-  const lines = text.trim().split(/\r?\n/);
-  const header = lines[0].split(",");
+  const lines = text.replace(/^\uFEFF/, "").trim().split(/\r?\n/);
+  const header = lines[0].split(",").map((h) => h.trim().toLowerCase());
   const iDate = header.indexOf("date");
-  const iClose = header.indexOf("close");
+  const iClose = header.indexOf("adj close") >= 0 ? header.indexOf("adj close") : header.indexOf("close");
   if (iDate < 0 || iClose < 0) throw new Error("CSV에 date, close 열이 필요합니다.");
   const rows = [];
   for (const line of lines.slice(1)) {
     const cells = line.split(",");
+    if (!cells[iClose] || cells[iClose] === "null") continue; // Yahoo holiday rows
     const close = Number(cells[iClose]);
     if (!(close > 0)) throw new Error(`0 이하 가격: ${line}`);
-    rows.push({ date: cells[iDate], close });
+    rows.push({ date: cells[iDate].slice(0, 10), close });
   }
   for (let i = 1; i < rows.length; i += 1) {
     if (rows[i].date <= rows[i - 1].date) throw new Error(`날짜 순서/중복 오류: ${rows[i].date}`);
@@ -30,10 +32,12 @@ function parseCsv(text) {
 
 export async function loadMarket() {
   if (cache) return cache;
+  const dataset = await fetch(DATASET).then((r) => { if (!r.ok) throw new Error(`dataset.json 로딩 실패 (${r.status})`); return r.json(); });
   const [csvText, meta] = await Promise.all([
-    fetch(CSV).then((r) => { if (!r.ok) throw new Error(`CSV 로딩 실패 (${r.status})`); return r.text(); }),
-    fetch(META).then((r) => (r.ok ? r.json() : {})),
+    fetch(`assets/data/${dataset.csv}`).then((r) => { if (!r.ok) throw new Error(`CSV 로딩 실패 (${r.status})`); return r.text(); }),
+    fetch(`assets/data/${dataset.metadata}`).then((r) => (r.ok ? r.json() : {})),
   ]);
+  meta.csv_file = dataset.csv;
   const rows = parseCsv(csvText);
   const closes = rows.map((r) => r.close);
   const returns = logReturns(closes);

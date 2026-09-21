@@ -76,16 +76,20 @@ class StaticSiteTests(unittest.TestCase):
             self.assertIn("data-page-nav", body, f"{f} lacks nav")
 
     def test_csv_hash_matches_metadata_and_is_chronological(self):
-        csv = SITE / "assets/data/sk-hynix-000660-daily.csv"
-        meta = json.loads((SITE / "assets/data/sk-hynix-000660-metadata.json").read_text(encoding="utf-8"))
+        dataset = json.loads((SITE / "assets/data/dataset.json").read_text(encoding="utf-8"))
+        csv = SITE / "assets/data" / dataset["csv"]
+        meta = json.loads((SITE / "assets/data" / dataset["metadata"]).read_text(encoding="utf-8"))
         self.assertEqual(hashlib.sha256(csv.read_bytes()).hexdigest(), meta["csv_sha256"])
         rows = csv.read_text(encoding="utf-8").strip().splitlines()
-        self.assertEqual(rows[0], "date,open,high,low,close,volume")
+        header = [h.lower() for h in rows[0].split(",")]
+        self.assertIn("date", header)
+        self.assertIn("close", header)
+        i_close = header.index("close")
         dates = [r.split(",")[0] for r in rows[1:]]
         self.assertEqual(dates, sorted(dates))
         self.assertEqual(len(dates), len(set(dates)))
         self.assertEqual(len(dates), meta["observations"])
-        self.assertTrue(all(float(r.split(",")[4]) > 0 for r in rows[1:]))
+        self.assertTrue(all(float(r.split(",")[i_close]) > 0 for r in rows[1:]))
 
     def test_llm_response_bank_is_well_formed(self):
         bank = json.loads((SITE / "assets/data/llm-responses.json").read_text(encoding="utf-8"))

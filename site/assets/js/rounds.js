@@ -22,8 +22,8 @@ export function buildRound(id, data) {
   let days;
   let show;
   if (id === "round1") {
-    days = 150; // last 150 days of the validation window (never the sealed test window)
-    real = data.open.returns.slice(-days);
+    days = 150; // last 150 days of the training window (in-sample; never the sealed test window)
+    real = data.trainReturns.slice(-days);
     show = { chart: true, metrics: false };
   } else if (id === "round2") {
     days = data.valReturns.length;
