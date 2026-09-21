@@ -23,7 +23,8 @@ $("#summary").innerHTML = `<table>
   ${Object.keys(ROUNDS).map((id) => `<tr><td>${ROUNDS[id].label}</td><td class="small">${votes[id] ? `${votes[id].choice} · 확신도 ${votes[id].confidence}% · "${escapeHtml(votes[id].reason)}"` : "—"}</td></tr>`).join("")}
   <tr><td>2b · 수리</td><td class="small">${state.repair ? `${state.repair.model} · 통과 ${state.repairScore ?? "?"}/5 · 나빠진 지표: ${escapeHtml(state.repairWorse || "—")}` : "—"}</td></tr>
   <tr><td>3a · 우리 규칙</td><td class="small">${Object.values(state.teamRules || {}).filter(Boolean).map(escapeHtml).join(" / ") || "—"}</td></tr>
-  <tr><td>3b · ABM</td><td class="small">${state.abmScore != null ? `통과 ${state.abmScore}/5 · ${escapeHtml(state.abmNotes || "")}` : "—"}</td></tr>
+  <tr><td>3b · Game of Life</td><td class="small">${escapeHtml(state.lifeNotes || "—")}</td></tr>
+  <tr><td>3c · ABM</td><td class="small">${escapeHtml(state.abmNotes || "—")}</td></tr>
   <tr><td>4a · LLM</td><td class="small">${escapeHtml(state.llmNotes || "—")}</td></tr>
   <tr><td>4b · 봉인 구간 성적</td><td class="small">${state.round3Exam ? `${escapeHtml(state.round3Exam.label)} · 통과 ${state.round3Exam.passCount}/5` : "—"}</td></tr>
 </table>`;

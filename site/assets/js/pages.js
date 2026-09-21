@@ -7,11 +7,12 @@ export const PAGES = [
   { id: "tests", file: "04-tests.html", no: "2a", title: "공개 · 보정 · 검사표", minutes: 25, block: "2교시", summary: "R1 정답 공개, 확신도 보정, 말을 숫자로 바꾸는 검사표, 순서 섞기." },
   { id: "repair", file: "05-repair.html", no: "2b", title: "모형 수리 작업실", minutes: 25, block: "2교시", summary: "t 충격 · GARCH-t · 블록 재추출 중 하나로 고치고, 나빠진 지표도 적습니다." },
   { id: "round2", file: "06-round2.html", no: "2c", title: "R2 · 검사표로 판별", minutes: 10, block: "2교시", summary: "차트 없이 숫자만 보고 진짜를 고릅니다." },
-  { id: "market", file: "07-market.html", no: "3a", title: "사람이 시장이 된다", minutes: 30, block: "3교시", summary: "역할 카드 · 뉴스 · 지정가 주문 · 단일가 체결 4라운드." },
-  { id: "abm", file: "08-abm.html", no: "3b", title: "규칙이 시장이 된다", minutes: 30, block: "3교시", summary: "방금 쓴 규칙을 에이전트로 조립해 200라운드를 돌리고 검사표를 적용합니다." },
-  { id: "llm", file: "09-llm.html", no: "4a", title: "규칙 대신 LLM을 앉히면?", minutes: 30, block: "4교시", summary: "같은 카드를 받은 LLM 4명은 얼마나 같은 판단을 하는가." },
-  { id: "round3", file: "10-round3.html", no: "4b", title: "R3 · 봉인 구간 최종전", minutes: 15, block: "4교시", summary: "처음 보는 최종 20% 구간에서 모형을 평가합니다." },
-  { id: "final", file: "11-final.html", no: "5", title: "설명서와 되돌아보기", minutes: 40, block: "5교시", summary: "한 장 설명서, 교차 심사, 처음 판단 다시 보기, 리더보드." },
+  { id: "market", file: "07-market.html", no: "3a", title: "사람이 시장이 된다", minutes: 25, block: "3교시", summary: "역할 카드 · 뉴스 · 지정가 주문 · 단일가 체결 4라운드, 그리고 우리 규칙 적기." },
+  { id: "life", file: "08-life.html", no: "3b", title: "Game of Life — 창발 맛보기", minutes: 10, block: "3교시", summary: "두 줄짜리 규칙에서 움직이는 패턴이 나옵니다. 셀 하나를 바꾼 쌍둥이 세계와 비교합니다." },
+  { id: "abm", file: "09-abm.html", no: "3c", title: "규칙이 시장이 된다 — ABM이라는 분야", minutes: 25, block: "3교시", summary: "3a의 규칙을 에이전트로 조립해 시장을 돌리고, 행위자 기반 모형이 어디까지 왔고 무엇이 더 연구되어야 하는지 봅니다." },
+  { id: "llm", file: "10-llm.html", no: "4a", title: "규칙 대신 LLM을 앉히면?", minutes: 30, block: "4교시", summary: "ABM의 최전선 — 같은 카드를 받은 LLM 4명은 얼마나 같은 판단을 하는가." },
+  { id: "round3", file: "11-round3.html", no: "4b", title: "R3 · 봉인 구간 최종전", minutes: 15, block: "4교시", summary: "처음 보는 최종 20% 구간에서 모형을 평가합니다." },
+  { id: "final", file: "12-final.html", no: "5", title: "설명서와 되돌아보기", minutes: 40, block: "5교시", summary: "한 장 설명서, 교차 심사, 처음 판단 다시 보기, 리더보드." },
 ];
 
 export const SCHEDULE = [
@@ -20,8 +21,8 @@ export const SCHEDULE = [
   { t: "01:15", len: 10, label: "휴식", isBreak: true },
   { t: "01:25", len: 60, label: "2교시 · 검사기를 만들고 모형을 고친다 (공개 → 검사표 → 수리 → R2)" },
   { t: "02:25", len: 10, label: "휴식", isBreak: true },
-  { t: "02:35", len: 60, label: "3교시 · 사람이 시장이 된다 → 규칙이 시장이 된다" },
-  { t: "03:35", len: 45, label: "4교시 · 규칙 대신 LLM을 앉히면? → R3 최종전" },
+  { t: "02:35", len: 60, label: "3교시 · 사람이 시장이 된다 → Game of Life → 규칙이 시장이 된다 (ABM이라는 분야)" },
+  { t: "03:35", len: 45, label: "4교시 · 규칙 대신 LLM을 앉히면? (ABM의 최전선) → R3 최종전" },
   { t: "04:20", len: 40, label: "5교시 · 설명서와 되돌아보기" },
 ];
 

@@ -1,4 +1,4 @@
-// Shared by 03-round1, 06-round2, 10-round3. The page's <body data-round="round1"> picks the round.
+// Shared by 03-round1, 06-round2, 11-round3. The page's <body data-round="round1"> picks the round.
 import { initChrome, $, $$, status, bindRange, escapeHtml } from "../ui.js";
 import { loadState, saveState, markComplete, team } from "../state.js";
 import { loadMarket } from "../data.js";

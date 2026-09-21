@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3b · Game of Life — 창발 맛보기 · 가짜 주식시장</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="life">
+<main class="shell">
+  <div data-page-head data-weapon="전체 시연 + 팀 조작 · 10분"></div>
+  <div class="callout question"><p class="eyebrow">시작 질문</p><strong>개별 셀은 한 칸도 움직이지 않는데, 왜 패턴은 움직이는가?</strong><p class="small muted">규칙은 두 줄뿐입니다 — 살아 있는 셀은 이웃이 2~3개면 살고, 죽은 셀은 이웃이 정확히 3개면 태어난다. 모든 셀은 이전 세대를 기준으로 동시에 갱신됩니다. 실행 전에 블록·블링커·글라이더의 미래를 팀별로 투표하세요.</p></div>
+
+  <section class="grid two">
+    <div class="card">
+      <div class="section-head"><div><p class="eyebrow">원본</p><h3>세대 <span data-gen>0</span> · 살아 있는 셀 <span data-live-a>0</span></h3></div></div>
+      <canvas class="board" id="board-a" width="480" height="480"></canvas>
+      <p class="small muted">일시정지 상태에서 셀을 클릭해 편집할 수 있습니다.</p>
+    </div>
+    <div class="card">
+      <div class="section-head"><div><p class="eyebrow">셀 하나를 바꾼 쌍둥이</p><h3>다른 셀 <span data-diff>0</span>개 · 살아 있는 셀 <span data-live-b>0</span></h3></div></div>
+      <canvas class="board" id="board-b" width="480" height="480"></canvas>
+      <p class="small muted">원본에서 셀 하나를 뒤집은 세계. 두 세계는 같은 세대를 동시에 진행합니다.</p>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:1rem">
+    <div class="controls">
+      <div class="field"><label for="pattern">초기 배치</label><select id="pattern"></select></div>
+      <div class="field"><label for="boundary">경계</label><select id="boundary"><option value="dead">바깥은 죽은 셀 (기본)</option><option value="torus">감김 (torus)</option></select></div>
+      <div class="field"><label>속도 <span class="value" id="speed-out"></span></label><input type="range" id="speed" min="1" max="20" value="6"></div>
+      <div class="field"><label>무작위 시드 <span class="value" id="seed-out"></span></label><input type="range" id="seed" min="1" max="99" value="1"></div>
+    </div>
+    <div class="actions"><button class="button primary" id="step" type="button">한 세대</button><button class="button" id="play" type="button">재생</button><button class="button" id="reset" type="button">초기화</button><button class="button small" id="flip" type="button">쌍둥이의 셀 하나 다시 고르기</button></div>
+    <div class="table-wrap"><table id="log"></table></div>
+  </section>
+
+  <section class="section grid two">
+    <div class="card soft">
+      <p class="eyebrow">보는 법</p>
+      <ul class="small">
+        <li><strong>블록</strong>은 영원히 그대로, <strong>블링커</strong>는 2세대마다 반복, <strong>글라이더</strong>는 4세대마다 대각선으로 한 칸 — 어느 셀도 움직이지 않았는데.</li>
+        <li><strong>R-펜토미노</strong>는 5개 셀에서 1,000세대 넘게 발산합니다. 규칙과 초기 상태가 주어지면 결과는 결정되지만, 계산해 보기 전엔 알 수 없습니다.</li>
+        <li>쌍둥이 세계는 <strong>민감도</strong>를 보여 줍니다. 셀 하나가 아무 차이도 못 만들 때도 있고, 전혀 다른 세계가 될 때도 있습니다. 민감도와 인과는 다릅니다.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <p class="eyebrow">주가와의 연결 — 한 문장만</p>
+      <p>이 실험이 "주가는 예측 불가능하다"를 증명하지는 않습니다. 보여 주는 것은 하나입니다: <strong>미시 규칙에는 없던 것이 거시 수준에서 나타난다.</strong> 다음 페이지에서 그 규칙을 여러분이 3a에서 쓴 시장 규칙으로 바꿉니다.</p>
+      <div class="field"><label for="life-notes">투표와 결과 — 예상이 빗나간 패턴은?</label><textarea id="life-notes"></textarea></div>
+      <div class="actions"><button class="button" id="save" type="button">저장</button><span class="small muted" id="save-status"></span></div>
+    </div>
+  </section>
+
+  <nav data-page-nav></nav>
+</main>
+<script type="module" src="assets/js/pages/life.js"></script>
+</body>
+</html>
