@@ -120,7 +120,8 @@ export function runMarket(config) {
   return { prices, returns, volumes, newsLog, actionsByType, wealthByType, fundamental, diagnostics: returns.length > 10 ? diagnostics(returns) : null };
 }
 
-// Five sanity/stylized-fact checks for the generator score of the ABM stage.
+// Five descriptive checks for classroom discussion. They are not a calibrated
+// goodness-of-fit test and should not be combined into a scientific score.
 export function abmChecks(result) {
   const p = result.prices;
   const d = result.diagnostics;

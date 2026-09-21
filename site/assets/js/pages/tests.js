@@ -22,7 +22,7 @@ function renderReveal(correct, counts) {
   $("#r1-reveal").innerHTML = `<div class="grid three">
     ${round1.cards.map((c) => `<div class="card soft${c.letter === correct ? " correct" : ""}"><h3>${c.letter} · ${c.name}</h3>${counts ? `<p class="stat"><span class="number">${counts[c.letter] || 0}</span><span class="label">팀 선택 (${total ? Math.round(((counts[c.letter] || 0) / total) * 100) : 0}%)</span></p>` : ""}</div>`).join("")}
   </div>
-  ${own ? `<p style="margin-top:.8rem">우리 팀: <strong>${saved.choice}</strong> 선택 · 확신도 ${saved.confidence}% · ${own.correct ? "정답" : "오답"} · 브라이어 <strong>${fmt(own.score, 3)}</strong></p>` : `<p class="muted small" style="margin-top:.8rem">이 브라우저에 R1 제출 기록이 없습니다.</p>`}`;
+  ${own ? `<p style="margin-top:.8rem">우리 팀: <strong>${saved.choice}</strong> 선택 · 확률 ${saved.confidence}% · ${own.correct ? "정답" : "오답"} · 3범주 Brier 보상 <strong>${fmt(own.score, 3)}</strong></p>` : `<p class="muted small" style="margin-top:.8rem">이 브라우저에 R1 제출 기록이 없습니다.</p>`}`;
 }
 async function refreshReveal() {
   try {
@@ -51,7 +51,7 @@ async function renderCalibration() {
     points.push({ x: avgConf, y: acc, r: 4 + Math.min(10, inBin.length), color: COLORS[1] });
     return `<tr><td>${lo}~${hi - 1}%</td><td class="num">${inBin.length}</td><td class="num">${pct(avgConf, 0)}</td><td class="num">${pct(acc, 0)}</td></tr>`;
   });
-  scatter($("#calibration"), points, { xRange: [0.3, 1], yRange: [0, 1], diagonal: true, xLabel: "확신도", yLabel: "정답률" });
+  scatter($("#calibration"), points, { xRange: [0.3, 1], yRange: [0, 1], diagonal: true, xLabel: "선택 확률", yLabel: "학급 정답률" });
   const overall = mean(rows.map((r) => r.correct)); const avgConf = mean(rows.map((r) => r.conf)) / 100;
   $("#calibration-table").innerHTML = `<tr><th>확신도 구간</th><th class="num">팀 수</th><th class="num">평균 확신도</th><th class="num">실제 정답률</th></tr>${tableRows.join("")}<tr><td><strong>전체</strong></td><td class="num">${rows.length}</td><td class="num">${pct(avgConf, 0)}</td><td class="num">${pct(overall, 0)}</td></tr>`;
 }
@@ -65,7 +65,7 @@ function renderMetrics() {
   const fmtRow = (r) => `${r.fmt(r.median)} <span class="muted small">(${r.fmt(r.lo)}~${r.fmt(r.hi)})</span>`;
   $("#metric-table").innerHTML = `<tr><th>검사 항목</th><th class="num">실제 (추정 구간)</th><th class="num">GBM</th><th class="num">GARCH-t</th></tr>${gbm.rows.map((r, i) => `<tr><td>${r.label}</td><td class="num"><strong>${r.fmt(r.real)}</strong></td><td class="num${r.pass ? "" : " muted"}">${fmtRow(r)}${r.pass ? "" : " ✗"}</td><td class="num${garch?.rows[i].pass ? "" : " muted"}">${garch ? fmtRow(garch.rows[i]) : "적합 실패"}${garch && !garch.rows[i].pass ? " ✗" : ""}</td></tr>`).join("")}`;
   const fit = data.garch();
-  $("#metric-note").textContent = `✗ = 실제값이 모형의 5~95% 범위 밖. GBM 통과 ${gbm.passCount}/5${garch ? ` · GARCH-t 통과 ${garch.passCount}/5 (α=${fmt(fit.alpha, 3)}, β=${fmt(fit.beta, 3)}, 자유도=${fmt(fit.dof, 1)}, ${fit.message})` : ""}. 추정 구간 ${train.length}일.`;
+  $("#metric-note").textContent = `✗ = 실제값이 모형의 5~95% 범위 밖. GBM 범위 안 ${gbm.passCount}/5${garch ? ` · GARCH-t 범위 안 ${garch.passCount}/5 (α=${fmt(fit.alpha, 3)}, β=${fmt(fit.beta, 3)}, 자유도=${fmt(fit.dof, 1)}, ${fit.message})` : ""}. 지표들이 서로 연관되어 있으므로 이 개수는 정식 검정이 아닙니다. 추정 구간 ${train.length}일.`;
   lineChart($("#ret-real"), [{ values: train, color: COLORS[0], width: 1 }], { yLabel: "로그수익률" });
   lineChart($("#ret-gbm"), [{ values: simulate(data, { model: "gbm" }, train.length, 1, 5)[0], color: COLORS[2], width: 1 }], { yLabel: "로그수익률" });
 }

@@ -5,7 +5,7 @@
 //   node scripts/dev_server.mjs [port]
 import { createServer } from "node:http";
 import { readFile, stat } from "node:fs/promises";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -23,7 +23,12 @@ class D1Statement {
   async all() { return { results: this.db.prepare(this.sql).all(...this.params) }; }
 }
 class D1 {
-  constructor() { this.db = new DatabaseSync(":memory:"); this.db.exec(readFileSync(path.join(ROOT, "drizzle/0000_classroom.sql"), "utf8")); }
+  constructor() {
+    this.db = new DatabaseSync(":memory:");
+    for (const file of readdirSync(path.join(ROOT, "drizzle")).filter((name) => name.endsWith(".sql")).sort()) {
+      this.db.exec(readFileSync(path.join(ROOT, "drizzle", file), "utf8"));
+    }
+  }
   prepare(sql) { return new D1Statement(this.db, sql); }
 }
 
@@ -33,6 +38,7 @@ const env = {
   DB: new D1(),
   INSTRUCTOR_PASSWORD_HASH: process.env.INSTRUCTOR_PASSWORD_HASH || createHash("sha256").update(process.env.INSTRUCTOR_PASSWORD || "mesa").digest("hex"),
   SESSION_SIGNING_SECRET: process.env.SESSION_SIGNING_SECRET || "dev-only-signing-secret",
+  CLASS_CODE: process.env.CLASS_CODE || "MESA",
 };
 
 const mime = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8", ".csv": "text/csv; charset=utf-8", ".svg": "image/svg+xml", ".md": "text/markdown; charset=utf-8", ".png": "image/png" };

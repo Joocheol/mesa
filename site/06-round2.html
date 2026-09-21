@@ -19,8 +19,8 @@
       <h3>우리 팀의 판정</h3>
       <div class="choice-row" id="choices"></div>
       <div class="field" style="margin-top:.8rem"><label for="reason">이유 한 문장 — "___ 때문에 이것이 진짜다"</label><textarea id="reason" placeholder="예: 큰 하락이 있고 그 뒤로 며칠 동안 변동이 몰려 있다"></textarea></div>
-      <div class="field"><label>확신도 <span class="value" id="confidence-out"></span></label><input type="range" id="confidence" min="34" max="100" value="60"><p class="small muted">세 개 중 하나이므로 34% 미만은 의미가 없습니다. 브라이어 점수: 맞으면 1−(1−p)², 틀리면 1−p². 50%면 항상 0.75.</p></div>
-      <div class="actions"><button class="button primary" id="submit" type="button">제출</button><button class="button small" id="local-reveal" type="button" title="강사용 오프라인 기능">오프라인 공개</button></div>
+      <div class="field"><label for="confidence">선택한 답의 확률 <span class="value" id="confidence-out"></span></label><input type="range" id="confidence" min="34" max="100" value="60"><p class="small muted">나머지 확률은 두 후보에 똑같이 나눕니다. 세 범주의 Brier loss를 계산한 뒤 리더보드에는 1−loss/2 보상으로 표시합니다. 33.3%는 정보가 없는 균등 예측입니다.</p></div>
+      <div class="actions"><button class="button primary" id="submit" type="button">제출</button><button class="button small offline-only hidden" id="local-reveal" type="button" title="서버가 없을 때만 사용하는 강사용 기능">오프라인 공개</button></div>
       <div id="vote-status" class="status hidden"></div>
     </section>
     <div id="reveal" class="card hidden" style="margin-top:1rem"></div>

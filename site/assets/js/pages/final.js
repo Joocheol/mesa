@@ -21,12 +21,12 @@ $("#summary").innerHTML = `<table>
   <tr><td>1a · 곱셈 세계 예상/실제</td><td class="small">${state.compoundResult ? `평균 예상 ${state.compoundGuess?.mean || "?"} → 실제 ${fmt(state.compoundResult.mean, 0)} · 중앙값 예상 ${state.compoundGuess?.median || "?"} → 실제 ${fmt(state.compoundResult.median, 1)}` : "—"}</td></tr>
   <tr><td>1b · GBM 가정</td><td class="small">${escapeHtml(state.gbmAssumption || "—")}</td></tr>
   ${Object.keys(ROUNDS).map((id) => `<tr><td>${ROUNDS[id].label}</td><td class="small">${votes[id] ? `${votes[id].choice} · 확신도 ${votes[id].confidence}% · "${escapeHtml(votes[id].reason)}"` : "—"}</td></tr>`).join("")}
-  <tr><td>2b · 수리</td><td class="small">${state.repair ? `${state.repair.model} · 통과 ${state.repairScore ?? "?"}/5 · 나빠진 지표: ${escapeHtml(state.repairWorse || "—")}` : "—"}</td></tr>
+  <tr><td>2b · 수리</td><td class="small">${state.repair ? `${state.repair.model} · 범위 안 ${state.repairScore ?? "?"}/5 · 나빠진 지표: ${escapeHtml(state.repairWorse || "—")}` : "—"}</td></tr>
   <tr><td>3a · 우리 규칙</td><td class="small">${Object.values(state.teamRules || {}).filter(Boolean).map(escapeHtml).join(" / ") || "—"}</td></tr>
   <tr><td>3b · Game of Life</td><td class="small">${escapeHtml(state.lifeNotes || "—")}</td></tr>
   <tr><td>3c · ABM</td><td class="small">${escapeHtml(state.abmNotes || "—")}</td></tr>
   <tr><td>4a · LLM</td><td class="small">${escapeHtml(state.llmNotes || "—")}</td></tr>
-  <tr><td>4b · 봉인 구간 성적</td><td class="small">${state.round3Exam ? `${escapeHtml(state.round3Exam.label)} · 통과 ${state.round3Exam.passCount}/5` : "—"}</td></tr>
+  <tr><td>4b · 처음 보는 구간 결과</td><td class="small">${state.round3Exam ? `${escapeHtml(state.round3Exam.label)} · 범위 안 ${state.round3Exam.passCount}/5` : "—"}</td></tr>
 </table>`;
 
 $("#lookback").innerHTML = votes.round1 ? `<div class="grid three"><div class="stat"><span class="number">${votes.round1.choice}</span><span class="label">R1 선택 · 확신도 ${votes.round1.confidence}%</span></div><div class="stat"><span class="number">${votes.round2?.confidence ?? "—"}%</span><span class="label">R2 확신도</span></div><div class="stat"><span class="number">${votes.round3?.confidence ?? "—"}%</span><span class="label">R3 확신도</span></div></div><blockquote class="small">R1에서 쓴 이유: "${escapeHtml(votes.round1.reason)}"</blockquote><p class="small muted">번역 메모(2a): ${escapeHtml(state.testsTranslated || "—")}</p>` : `<p class="muted small">이 브라우저에 R1 기록이 없습니다.</p>`;

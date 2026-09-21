@@ -59,7 +59,7 @@ function render(result) {
   lineChart($("#returns"), [{ values: result.returns, color: COLORS[1], width: 1 }], { yLabel: "로그수익률" });
   const checks = abmChecks(result);
   const passCount = checks.filter((c) => c.pass).length;
-  $("#checks").innerHTML = `<tr><th>검사</th><th class="num">값</th><th>통과</th></tr>${checks.map((c) => `<tr class="${c.pass ? "better" : "worse"}"><td>${c.label}</td><td class="num">${c.value}</td><td>${c.pass ? "예" : "아니오"}</td></tr>`).join("")}`;
+  $("#checks").innerHTML = `<tr><th>수업용 관찰 항목</th><th class="num">값</th><th>기준에 해당?</th></tr>${checks.map((c) => `<tr class="${c.pass ? "better" : "worse"}"><td>${c.label}</td><td class="num">${c.value}</td><td>${c.pass ? "예" : "아니오"}</td></tr>`).join("")}`;
   const real = diagnostics(data.trainReturns);
   const d = result.diagnostics;
   $("#compare").innerHTML = `<tr><th>모양 지표</th><th class="num">에이전트 시장</th><th class="num">실제 (추정 구간)</th></tr><tr><td>초과첨도</td><td class="num">${d ? fmt(d.kurtosis, 2) : "—"}</td><td class="num">${fmt(real.kurtosis, 2)}</td></tr><tr><td>±3σ 초과 빈도</td><td class="num">${d ? pct(d.exceed3, 2) : "—"}</td><td class="num">${pct(real.exceed3, 2)}</td></tr><tr><td>제곱수익률 ACF(1)</td><td class="num">${d ? fmt(d.acf1, 3) : "—"}</td><td class="num">${fmt(real.acf1, 3)}</td></tr><tr><td>제곱수익률 ACF(5)</td><td class="num">${d ? fmt(d.acf5, 3) : "—"}</td><td class="num">${fmt(real.acf5, 3)}</td></tr><tr><td>라운드당 변동성</td><td class="num">${d ? pct(d.annVol / Math.sqrt(252), 2) : "—"}</td><td class="num">${pct(real.annVol / Math.sqrt(252), 2)} <span class="muted small">/일</span></td></tr>`;

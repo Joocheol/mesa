@@ -9,7 +9,7 @@ const bank = await fetch("assets/data/llm-responses.json").then((r) => r.json())
 
 const RESEARCH = [
   { title: "FCLAgent (2025)", url: "https://arxiv.org/abs/2510.12189", observed: "LLM은 매수/매도 방향만 판단하고 가격·수량은 규칙이 정하는 하이브리드 구조. 경로 의존 패턴과 시장 경로에 따라 달라지는 손실회피 기준점을 시뮬레이션에서 관찰했다고 보고.", interpretation: "자연어 판단을 넣는다고 시장이 현실적이 되는 것은 아니다. 판단부와 주문·체결 규칙을 분리하고 어떤 패턴을 어느 조건에서 재현했는지 한정해야 한다." },
-  { title: "실험시장 인간 vs LLM (2025)", url: "https://arxiv.org/abs/2505.07457", observed: "LLM 참가자의 결정이 가격을 바꾸고 다시 결정에 영향을 주는 피드백 실험. 넓은 경향(양/음의 피드백 시장)은 재현했지만 인간보다 행동 이질성이 작았다고 보고.", interpretation: "평균 패턴이 비슷해도 참여자 간 다양성과 미시 경로는 다를 수 있다. 오늘 동조 실험이 바로 그 '이질성'을 세는 실험이다." },
+  { title: "실험시장 인간 vs LLM (2025)", url: "https://arxiv.org/abs/2505.07457", observed: "LLM 참가자의 결정이 가격을 바꾸고 다시 결정에 영향을 주는 피드백 실험. 넓은 경향(양/음의 피드백 시장)은 재현했지만 인간보다 행동 이질성이 작았다고 보고.", interpretation: "평균 패턴이 비슷해도 참여자 간 다양성과 미시 경로는 다를 수 있다. 오늘 화면은 이 연구 질문을 소개하며, 강사 작성 예시 자체는 재현 실험이 아니다." },
   { title: "더 좋은 모형, 더 위험한 시스템 (2026)", url: "https://arxiv.org/abs/2609.04373", observed: "능력이 높은 LLM들 사이의 행동 상관이 커질 수 있다. 공유 추론이 맞을 때는 참여 증가가 위험을 줄이지만, 공통 오정보 환경에서는 같은 상관이 위험이 된다고 보고.", interpretation: "개별 성능과 시스템 수준의 다양성·안정성을 분리해 평가해야 한다. 공통 프롬프트·공통 학습 배경이 만드는 동조를 스트레스 시나리오로 점검한다." },
 ];
 $("#research").innerHTML = RESEARCH.map((r) => `<div class="card soft"><h3><a href="${r.url}" target="_blank" rel="noreferrer">${r.title} ↗</a></h3><p class="small"><strong>관찰</strong> ${r.observed}</p><p class="small muted"><strong>해석</strong> ${r.interpretation}</p></div>`).join("");
@@ -42,10 +42,10 @@ function renderConformity() {
   const round = market?.history?.find((h) => h.news === NEWS[Number(ni)].text);
   const humanActions = round ? round.orders.map((o) => o.side) : [];
   const human = agreementOf(humanActions);
-  $("#agreement").innerHTML = `<div class="stat"><span class="number">${pct(llm.share, 0)}</span><span class="label">LLM 4명 최다 행동 일치율 (${Object.entries(llm.counts).map(([k, v]) => `${{ buy: "매수", sell: "매도", hold: "관망" }[k]} ${v}`).join(", ")})</span></div><div class="stat"><span class="number">${spread}</span><span class="label">LLM 지정가 범위 (최고−최저)</span></div><div class="stat"><span class="number">${round ? pct(human.share, 0) : "—"}</span><span class="label">사람 ${humanActions.length || 0}팀 최다 행동 일치율 (같은 뉴스 라운드)</span></div>`;
+  $("#agreement").innerHTML = `<div class="stat"><span class="number">${pct(llm.share, 0)}</span><span class="label">강사 작성 예시 4개의 최다 행동 비율 (${Object.entries(llm.counts).map(([k, v]) => `${{ buy: "매수", sell: "매도", hold: "관망" }[k]} ${v}`).join(", ")})</span></div><div class="stat"><span class="number">${spread}</span><span class="label">예시 지정가 범위 (최고−최저)</span></div><div class="stat"><span class="number">${round ? pct(human.share, 0) : "—"}</span><span class="label">사람 ${humanActions.length || 0}팀의 최다 행동 비율 (참고용·조건 다름)</span></div>`;
   if (round) {
     $("#human-table").innerHTML = `<tr><th>팀</th><th>역할</th><th>행동</th><th class="num">지정가</th><th>이유</th></tr>${round.orders.map((o) => { const t = market.teams.find((x) => x.id === o.id); return `<tr><td>${escapeHtml(o.name)}</td><td>${ROLE_CARDS.find((r) => r.id === t?.role)?.name || ""}</td><td>${{ buy: "매수", sell: "매도", hold: "관망" }[o.side]}</td><td class="num">${o.side === "hold" ? "—" : o.price}</td><td class="small">${escapeHtml(o.reason || "")}</td></tr>`; }).join("")}`;
-    $("#human-note").textContent = "사람 팀은 역할이 서로 다르므로(카드 4종) LLM 4명(같은 역할)과 완전히 같은 비교는 아닙니다 — 그 차이도 토론거리입니다.";
+    $("#human-note").textContent = "사람 팀은 역할이 서로 다르고 오른쪽 사례는 강사 작성 예시이므로 두 비율을 비교해 LLM과 사람의 차이라고 결론낼 수 없습니다.";
   } else {
     $("#human-table").innerHTML = ""; $("#human-note").textContent = "3a에서 이 뉴스로 진행한 라운드 기록이 이 브라우저에 없습니다. 강사 화면에서 비교하세요.";
   }

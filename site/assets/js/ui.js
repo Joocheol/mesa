@@ -83,8 +83,20 @@ function renderNav() {
   slot.innerHTML = `${prev ? `<a class="button" href="${prev.file}">← ${prev.no} ${prev.title}</a>` : `<a class="button" href="index.html">← 개요</a>`}${next ? `<a class="button primary" href="${next.file}">${next.no} ${next.title} →</a>` : `<a class="button primary" href="leaderboard.html">리더보드 →</a>`}`;
 }
 
+function labelUnnamedControls() {
+  const explicitLabels = $$('label[for]');
+  for (const control of $$('input, select, textarea')) {
+    const hasExplicitLabel = control.id && explicitLabels.some((label) => label.htmlFor === control.id);
+    if (hasExplicitLabel || control.getAttribute('aria-label') || control.getAttribute('aria-labelledby')) continue;
+    const label = control.closest('.field')?.querySelector('label') || control.closest('label');
+    const text = label?.textContent?.replace(/\s+/g, ' ').trim();
+    if (text) control.setAttribute('aria-label', text);
+  }
+}
+
 export function initChrome() {
   renderHeader();
   renderPageHead();
   renderNav();
+  labelUnnamedControls();
 }

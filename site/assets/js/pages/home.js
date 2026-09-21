@@ -22,7 +22,7 @@ try {
   src.textContent = `${meta.source_name || "—"} · ${meta.acquired_at || ""}`;
   if (meta.source_url) src.href = meta.source_url;
   $("[data-meta-price]").textContent = meta.price_definition || "—";
-  $("[data-meta-split]").textContent = `추정 ${split.nTrain}일 (${split.trainRange[0]}~${split.trainRange[1]}) · 검증 ${split.nVal}일 · 최종평가 ${split.nTest}일 (봉인)`;
+  $("[data-meta-split]").textContent = `추정 ${split.nTrain}일 (${split.trainRange[0]}~${split.trainRange[1]}) · 검증 ${split.nVal}일 · 최종평가 ${split.nTest}일 (수업 중 숨김)`;
   $("[data-meta-hash]").textContent = meta.csv_sha256 || "—";
   const dl = $("[data-csv-download]"); if (dl) dl.href = `assets/data/${meta.csv_file}`;
   const closes = open.rows.map((r) => r.close / open.rows[0].close * 100);

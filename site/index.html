@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="은행 퀀트·리스크 실무자를 위한 5시간 참여형 시뮬레이션 워크숍 — 속이는 팀과 잡아내는 팀">
+<meta name="description" content="은행 퀀트·리스크 실무자를 위한 3시간 핵심 + 2시간 확장 참여형 시뮬레이션 워크숍 — 속이는 팀과 잡아내는 팀">
 <title>가짜 주식시장 만들기</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/styles.css">
@@ -12,7 +12,7 @@
 <main class="shell">
   <section class="hero">
     <div>
-      <p class="eyebrow">5시간 참여형 워크숍 · 브라우저만 있으면 됩니다</p>
+      <p class="eyebrow">3시간 핵심 + 2시간 확장 권장 · 브라우저만 있으면 됩니다</p>
       <h1>가짜 주식시장 만들기<br><span class="accent">속이는 팀과 잡아내는 팀</span></h1>
       <p class="lead">손으로 쓴 동전 던지기에서 시작해, 주가 모형을 만들고, 검사기를 만들고, 직접 시장이 되어 보고, 그 규칙을 에이전트에게 넘기고, 마지막에 LLM을 앉혀 봅니다. 하루 종일 한 가지 질문이 반복됩니다 — <strong>진짜처럼 보이는가, 아니면 검사를 견디는가?</strong></p>
       <div class="hero-actions">
@@ -26,7 +26,7 @@
       <h3 data-data-name>불러오는 중…</h3>
       <p class="muted small"><span data-data-range>—</span><br><span data-data-count>—</span> 거래일 · 마지막 종가 <span data-data-last>—</span></p>
       <div class="chart" data-home-chart style="min-height:160px"></div>
-      <p class="chart-caption">첫 관측값 = 100 정규화 · 로그축 · 마지막 20%는 <strong>봉인</strong>되어 R3까지 보이지 않습니다</p>
+      <p class="chart-caption">첫 관측값 = 100 정규화 · 로그축 · 마지막 20%는 수업 진행상 <strong>R3까지 숨깁니다</strong>. 공개 데이터 기반 활동이므로 이 숨김은 보안 장치가 아닙니다.</p>
     </aside>
   </section>
 
@@ -34,13 +34,13 @@
     <div class="section-head"><div><p class="eyebrow">인간 GAN 토너먼트</p><h2>하루를 하나로 묶는 게임</h2></div></div>
     <div class="grid three">
       <div class="card"><p class="eyebrow">역할</p><h3>생성자 ↔ 판별자</h3><p class="muted">모형을 만들어 속이는 팀과, 진짜를 가려내는 팀. 라운드마다 역할이 바뀝니다.</p></div>
-      <div class="card"><p class="eyebrow">무기</p><h3>눈 → 검사표 → 봉인 구간</h3><p class="muted">R1은 차트만, R2는 숫자만, R3는 한 번도 본 적 없는 마지막 20% 구간으로 최종전.</p></div>
-      <div class="card"><p class="eyebrow">채점</p><h3>브라이어 점수</h3><p class="muted">맞으면 1−(1−p)², 틀리면 1−p². 확신 100%로 틀리면 0점, 50%면 항상 0.75점. <em>PD 모형 보정과 같은 원리.</em></p></div>
+      <div class="card"><p class="eyebrow">무기</p><h3>눈 → 검사표 → 처음 보는 구간</h3><p class="muted">R1은 차트만, R2는 숫자만, R3는 수업 중 처음 공개하는 마지막 20% 구간으로 최종전.</p></div>
+      <div class="card"><p class="eyebrow">채점</p><h3>3범주 Brier 보상</h3><p class="muted">선택한 답에 확률 p를 주고 나머지를 균등 배분해 정식 3범주 Brier loss를 계산합니다. 리더보드는 읽기 쉽게 <em>1−loss/2</em>를 표시합니다.</p></div>
     </div>
   </section>
 
   <section class="section">
-    <div class="section-head"><div><p class="eyebrow">Course map</p><h2 id="course-map">13개 활동 · 300분</h2></div><p class="muted">각 활동은 예상 → 실행 → 비교 → 가정 하나 변경의 네 박자로 진행합니다.</p></div>
+    <div class="section-head"><div><p class="eyebrow">Course map</p><h2 id="course-map">13개 활동 · 전체 300분</h2></div><p class="muted">3시간 핵심 세션과 2시간 확장 세션으로 나누는 운영을 권장합니다. 각 활동은 예상 → 실행 → 비교 → 가정 하나 변경의 네 박자로 진행합니다.</p></div>
     <div class="grid three" data-course-map></div>
   </section>
 
@@ -61,7 +61,7 @@
     </div>
   </section>
 
-  <footer class="site-footer">총 300분 · 휴식 20분 포함 · 모든 계산은 이 브라우저에서 실행됩니다 · 팀 투표와 리더보드만 서버를 사용합니다.</footer>
+  <footer class="site-footer">전체 300분 · 3시간+2시간 분할 권장 · 휴식 20분 포함 · 모든 계산은 이 브라우저에서 실행됩니다 · 팀 투표와 리더보드만 서버를 사용합니다.</footer>
 </main>
 <script type="module" src="assets/js/pages/home.js"></script>
 </body>

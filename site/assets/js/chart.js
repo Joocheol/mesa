@@ -37,7 +37,9 @@ function logTicks(min, max) {
 
 function frame(container, { xLabel, yLabel } = {}) {
   container.innerHTML = "";
-  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img" });
+  const description = [yLabel, xLabel].filter(Boolean).join(" 대 ") || "데이터 시각화";
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": description });
+  svg.appendChild(el("title", {}, description));
   container.appendChild(svg);
   if (yLabel) svg.appendChild(el("text", { x: 6, y: 12, "font-size": 11 }, yLabel));
   if (xLabel) svg.appendChild(el("text", { x: W - PAD.r, y: H - 4, "text-anchor": "end", "font-size": 11 }, xLabel));

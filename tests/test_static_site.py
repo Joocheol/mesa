@@ -22,6 +22,7 @@ class Collector(HTMLParser):
         self.links: list[str] = []
         self.ids: list[str] = []
         self.scripts: list[str] = []
+        self.canvases: list[dict[str, str]] = []
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
@@ -31,6 +32,8 @@ class Collector(HTMLParser):
             self.scripts.append(a["src"])
         if a.get("id"):
             self.ids.append(a["id"])
+        if tag == "canvas":
+            self.canvases.append(a)
 
 
 def parse(path: Path) -> Collector:
@@ -58,6 +61,17 @@ class StaticSiteTests(unittest.TestCase):
         for page in self.pages:
             ids = parse(page).ids
             self.assertEqual(len(ids), len(set(ids)), f"{page.name}: duplicate ids {sorted(set(i for i in ids if ids.count(i) > 1))}")
+
+    def test_canvas_and_keyboard_accessibility_hooks(self):
+        for page in self.pages:
+            for canvas in parse(page).canvases:
+                self.assertEqual(canvas.get("role"), "img", f"{page.name}: canvas lacks role=img")
+                self.assertTrue(canvas.get("aria-label"), f"{page.name}: canvas lacks aria-label")
+        css = (SITE / "assets/styles.css").read_text(encoding="utf-8")
+        self.assertIn(":focus-visible", css)
+        self.assertIn("prefers-reduced-motion", css)
+        ui = (SITE / "assets/js/ui.js").read_text(encoding="utf-8")
+        self.assertIn("labelUnnamedControls", ui)
 
     def test_js_imports_resolve(self):
         for js in (SITE / "assets/js").rglob("*.js"):
@@ -93,7 +107,7 @@ class StaticSiteTests(unittest.TestCase):
 
     def test_llm_response_bank_is_well_formed(self):
         bank = json.loads((SITE / "assets/data/llm-responses.json").read_text(encoding="utf-8"))
-        self.assertIn("사전 생성", bank["note"])
+        self.assertIn("강사가 작성한 가상 예시", bank["note"])
         for role, by_news in bank["responses"].items():
             for news, responses in by_news.items():
                 self.assertEqual(len(responses), 4, f"{role}/{news}")
