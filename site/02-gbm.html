@@ -16,7 +16,7 @@
     <div class="card">
       <p class="eyebrow">추정 구간에서 뽑은 모수</p>
       <div id="estimates" class="grid three"></div>
-      <p class="small muted">추정 구간(처음 60%)의 일별 로그수익률로 계산했습니다. 검증·최종 구간은 쓰지 않았습니다. 가격 과정의 산술 드리프트 μ = 로그수익률 평균×252 + σ²/2.</p>
+      <p class="small muted">추정 구간(처음 60%)의 일별 로그수익률로 계산했습니다. 검증·최종 구간은 쓰지 않았습니다. μ는 가격의 평균적인 연간 방향, σ는 흔들림의 연간 크기입니다. 여기서 가격 과정의 산술 드리프트 μ = 로그수익률 평균×252 + σ²/2.</p>
       <div class="controls">
         <div class="field"><label>연 드리프트 μ (%) <span class="value" data-out="mu"></span></label><input type="range" id="mu" min="-50" max="150" step="1"></div>
         <div class="field"><label>연 변동성 σ (%) <span class="value" data-out="sigma"></span></label><input type="range" id="sigma" min="5" max="120" step="1"></div>
@@ -30,7 +30,7 @@
     </div>
     <div class="card">
       <div class="chart" id="paths"></div>
-      <p class="chart-caption">GBM 경로 20개 · 시작 100 · 로그축 · 정확한 로그정규 전이 S(t+dt)=S(t)·exp((μ−σ²/2)dt+σ√dt·Z)</p>
+      <p class="chart-caption">가격은 매일 평균적인 변화와 무작위 충격을 곱해 갱신합니다. GBM 경로 20개 · 시작 100 · 로그축 · 정확한 로그정규 전이 S(t+dt)=S(t)·exp((μ−σ²/2)dt+σ√dt·Z). 공식을 외울 필요는 없습니다.</p>
       <div class="chart" id="finals"></div>
       <p class="chart-caption">최종 가격 분포 (1,000경로) · 점선: 평균 / 중앙값</p>
       <div id="gbm-stats" class="grid three"></div>

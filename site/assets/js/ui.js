@@ -1,5 +1,5 @@
 // Shared page chrome: header with progress, activity head, prev/next nav, helpers.
-import { PAGES, neighbours, pageById } from "./pages.js";
+import { BEGINNER_NOTES, PAGES, neighbours, pageById } from "./pages.js";
 import { loadState, team } from "./state.js";
 
 export const $ = (sel, root = document) => root.querySelector(sel);
@@ -41,6 +41,7 @@ function renderHeader() {
   header.innerHTML = `<div class="inner">
     <a class="brand" href="index.html"><span class="brand-mark">FM</span><span>가짜 주식시장 만들기</span></a>
     <div class="progress-wrap"><div class="progress-label"><span data-progress-label></span><span>진행률</span></div><div class="progress-track"><div class="progress-fill" data-progress-fill></div></div></div>
+    <a class="pill guide-link" href="guide.html">처음이라면 · 개념 가이드</a>
     <a class="team-chip" href="join.html" data-team-chip></a>
     <a class="pill" href="leaderboard.html">리더보드</a>
   </div>`;
@@ -67,11 +68,17 @@ function renderPageHead() {
   const current = pageById(document.body.dataset.page);
   const slot = $("[data-page-head]");
   if (!current || !slot) return;
+  const beginner = BEGINNER_NOTES[current.id];
+  const beginnerHtml = beginner ? `<details class="beginner-note">
+    <summary>시뮬레이션이 처음이라면 · ${escapeHtml(beginner.title)}</summary>
+    <p>${escapeHtml(beginner.body)}</p>
+    <div class="concept-links">${beginner.terms.map(([label, anchor]) => `<a href="guide.html#${anchor}">${escapeHtml(label)} 설명 →</a>`).join("")}</div>
+  </details>` : "";
   slot.innerHTML = `<div class="page-head">
     <div><p class="eyebrow">${current.block} · ${current.no}</p><h1>${current.title}</h1><p class="lead muted">${current.summary}</p></div>
     <div class="meta"><span class="pill">⏱ ${current.minutes}분</span>${slot.dataset.weapon ? `<span class="pill accent">${slot.dataset.weapon}</span>` : ""}</div>
   </div>
-  <div class="loop"><div><strong>예상</strong>먼저 답을 적는다</div><div><strong>실행</strong>돌려 본다</div><div><strong>비교</strong>예상과 다른 이유</div><div><strong>변경</strong>가정 하나만 바꾼다</div></div>`;
+  <div class="loop"><div><strong>예상</strong>먼저 답을 적는다</div><div><strong>실행</strong>돌려 본다</div><div><strong>비교</strong>예상과 다른 이유</div><div><strong>변경</strong>가정 하나만 바꾼다</div></div>${beginnerHtml}`;
 }
 
 function renderNav() {
