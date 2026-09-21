@@ -182,3 +182,5 @@ canvas.board { width: 100%; height: auto; display: block; background: var(--bg-2
 /* compact result tables */
 td.nowrap, th.nowrap { white-space: nowrap; }
 #result-table td:nth-child(5), #result-table td:nth-child(6) { white-space: nowrap; }
+dd.mono, .hash { word-break: break-all; overflow-wrap: anywhere; }
+dl dd { margin: 0 0 .5rem; }
