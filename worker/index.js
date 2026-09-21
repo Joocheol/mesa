@@ -5,13 +5,16 @@ const ASSETS = __ASSET_MAP__;
 
 const ACTIVITIES = new Set(["round1", "round2", "round3"]);
 const SCORE_ACTIVITIES = new Set(["repair", "abm"]);
+const COURSE_ACTIVITIES = new Set(["random", "galton", "gbm", "round1", "tests", "repair", "round2", "market", "life", "abm", "llm", "round3", "final"]);
+const PRESENCE_PAGES = new Set([...COURSE_ACTIVITIES, "home", "guide", "join", "leaderboard"]);
+const FACILITATION_PHASES = new Set(["setup", "activity", "paused", "debrief", "break", "ended"]);
 const CHOICES = new Set(["A", "B", "C"]);
 const encoder = new TextEncoder();
 const SECURITY_HEADERS = {
   "x-content-type-options": "nosniff",
   "referrer-policy": "strict-origin-when-cross-origin",
   "permissions-policy": "camera=(), microphone=(), geolocation=()",
-  "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
+  "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'",
 };
 
 const json = (value, status = 200, headers = {}) =>
@@ -91,6 +94,24 @@ async function publicState(env, classCode, activityId) {
   return result;
 }
 
+async function ensureFacilitationState(db, classCode) {
+  await db.prepare("INSERT INTO classroom_facilitation_state (class_code, activity_id, phase, ends_at, remaining_seconds, message, updated_at) VALUES (?, 'random', 'setup', NULL, 0, '', ?) ON CONFLICT(class_code) DO NOTHING").bind(classCode, now()).run();
+  return db.prepare("SELECT activity_id, phase, ends_at, remaining_seconds, message, updated_at FROM classroom_facilitation_state WHERE class_code = ?").bind(classCode).first();
+}
+
+function publicFacilitation(state) {
+  const currentSeconds = Math.floor(Date.now() / 1000);
+  const endsAt = state.ends_at === null || state.ends_at === undefined ? null : Number(state.ends_at);
+  return {
+    activityId: state.activity_id,
+    phase: state.phase,
+    endsAt,
+    remainingSeconds: endsAt ? Math.max(0, endsAt - currentSeconds) : Number(state.remaining_seconds || 0),
+    message: state.message || "",
+    updatedAt: state.updated_at,
+  };
+}
+
 const mime = (path) =>
   path.endsWith(".html") ? "text/html; charset=utf-8"
     : path.endsWith(".js") ? "text/javascript; charset=utf-8"
@@ -141,6 +162,30 @@ export async function handleApi(request, env) {
     if (!classCode || !ACTIVITIES.has(activityId)) return json({ error: "수업 코드와 활동이 필요합니다." }, 400);
     if (!classAllowed(env, classCode)) return classError();
     return json(await publicState(env, classCode, activityId));
+  }
+
+  if (path === "/api/presentation" && request.method === "GET") {
+    const classCode = classOf(url.searchParams.get("class_code"));
+    if (!classCode) return json({ error: "수업 코드가 필요합니다." }, 400);
+    if (!classAllowed(env, classCode)) return classError();
+    const state = await ensureFacilitationState(env.DB, classCode);
+    const cutoff = new Date(Date.now() - 2 * 60 * 1000).toISOString();
+    const active = await env.DB.prepare("SELECT COUNT(*) AS count FROM classroom_presence WHERE class_code = ? AND updated_at >= ?").bind(classCode, cutoff).first();
+    const round = ACTIVITIES.has(state.activity_id) ? await publicState(env, classCode, state.activity_id) : null;
+    return json({ classCode, ...publicFacilitation(state), activeDevices: Number(active?.count || 0), round });
+  }
+
+  if (path === "/api/presence" && request.method === "POST") {
+    const data = await body(request);
+    const classCode = classOf(data.classCode);
+    const voterId = safe(data.voterId, 80);
+    const teamName = safe(data.teamName, 40);
+    const activityId = safe(data.activityId, 40);
+    if (!classCode || !voterId || !teamName || !PRESENCE_PAGES.has(activityId)) return json({ error: "접속 상태 입력값을 확인하세요." }, 400);
+    if (!classAllowed(env, classCode)) return classError();
+    await env.DB.prepare("INSERT INTO classroom_presence (class_code, voter_id, team_name, activity_id, updated_at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(class_code, voter_id) DO UPDATE SET team_name=excluded.team_name, activity_id=excluded.activity_id, updated_at=excluded.updated_at")
+      .bind(classCode, voterId, teamName, activityId, now()).run();
+    return json({ ok: true });
   }
 
   if (path === "/api/vote" && request.method === "POST") {
@@ -219,6 +264,48 @@ export async function handleApi(request, env) {
       const rows = await env.DB.prepare("SELECT activity_id, team_name, value, detail, updated_at FROM classroom_scores WHERE class_code = ? ORDER BY updated_at").bind(classCode).all();
       return json({ scores: rows.results });
     }
+    if (path === "/api/instructor/presence" && request.method === "GET") {
+      const classCode = classOf(url.searchParams.get("class_code"));
+      if (!classCode) return json({ error: "수업 코드가 필요합니다." }, 400);
+      if (!classAllowed(env, classCode)) return classError();
+      const cutoff = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+      const rows = await env.DB.prepare("SELECT team_name, activity_id, updated_at FROM classroom_presence WHERE class_code = ? AND updated_at >= ? ORDER BY team_name").bind(classCode, cutoff).all();
+      return json({ devices: rows.results });
+    }
+    if (path === "/api/instructor/facilitation" && request.method === "GET") {
+      const classCode = classOf(url.searchParams.get("class_code"));
+      if (!classCode) return json({ error: "수업 코드가 필요합니다." }, 400);
+      if (!classAllowed(env, classCode)) return classError();
+      return json({ classCode, ...publicFacilitation(await ensureFacilitationState(env.DB, classCode)) });
+    }
+    if (path === "/api/instructor/facilitation" && request.method === "POST") {
+      const data = await body(request);
+      const classCode = classOf(data.classCode);
+      const activityId = safe(data.activityId, 40);
+      const phase = safe(data.phase, 20);
+      const message = safe(data.message, 240);
+      if (!classCode || !COURSE_ACTIVITIES.has(activityId) || !FACILITATION_PHASES.has(phase)) return json({ error: "진행 상태 입력값을 확인하세요." }, 400);
+      if (!classAllowed(env, classCode)) return classError();
+      const current = await ensureFacilitationState(env.DB, classCode);
+      const currentSeconds = Math.floor(Date.now() / 1000);
+      let endsAt = current.ends_at === null || current.ends_at === undefined ? null : Number(current.ends_at);
+      let remainingSeconds = Number(current.remaining_seconds || 0);
+      if (phase === "paused") {
+        remainingSeconds = endsAt ? Math.max(0, endsAt - currentSeconds) : remainingSeconds;
+        endsAt = null;
+      } else if (["activity", "debrief", "break"].includes(phase)) {
+        const durationSeconds = Number(data.durationSeconds);
+        if (!Number.isInteger(durationSeconds) || durationSeconds < 0 || durationSeconds > 7200) return json({ error: "진행 시간은 0~120분이어야 합니다." }, 400);
+        remainingSeconds = durationSeconds;
+        endsAt = durationSeconds ? currentSeconds + durationSeconds : null;
+      } else {
+        endsAt = null;
+        remainingSeconds = 0;
+      }
+      await env.DB.prepare("UPDATE classroom_facilitation_state SET activity_id=?, phase=?, ends_at=?, remaining_seconds=?, message=?, updated_at=? WHERE class_code=?")
+        .bind(activityId, phase, endsAt, remainingSeconds, message, now(), classCode).run();
+      return json({ ok: true, classCode, ...publicFacilitation(await ensureFacilitationState(env.DB, classCode)) });
+    }
     if (path === "/api/instructor/state" && request.method === "POST") {
       const data = await body(request);
       const classCode = classOf(data.classCode);
@@ -246,7 +333,9 @@ export async function handleApi(request, env) {
       } else {
         await env.DB.prepare("DELETE FROM classroom_votes WHERE class_code=?").bind(classCode).run();
         await env.DB.prepare("DELETE FROM classroom_scores WHERE class_code=?").bind(classCode).run();
+        await env.DB.prepare("DELETE FROM classroom_presence WHERE class_code=?").bind(classCode).run();
         await env.DB.prepare("UPDATE classroom_activity_state SET open=CASE WHEN activity_id='round3' THEN 0 ELSE 1 END, revealed=0, correct_choice=NULL, updated_at=? WHERE class_code=?").bind(now(), classCode).run();
+        await env.DB.prepare("UPDATE classroom_facilitation_state SET activity_id='random', phase='setup', ends_at=NULL, remaining_seconds=0, message='', updated_at=? WHERE class_code=?").bind(now(), classCode).run();
       }
       return json({ ok: true });
     }

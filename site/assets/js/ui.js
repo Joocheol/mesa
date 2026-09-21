@@ -1,6 +1,7 @@
 // Shared page chrome: header with progress, activity head, prev/next nav, helpers.
 import { BEGINNER_NOTES, PAGES, neighbours, pageById } from "./pages.js";
 import { loadState, team } from "./state.js";
+import { reportPresence } from "./classroom.js";
 
 export const $ = (sel, root = document) => root.querySelector(sel);
 export const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -102,8 +103,16 @@ function labelUnnamedControls() {
 }
 
 export function initChrome() {
-  renderHeader();
+  const projector = new URLSearchParams(location.search).get("projector") === "1";
+  if (projector) document.body.classList.add("projector-view");
+  else renderHeader();
   renderPageHead();
-  renderNav();
+  if (!projector) renderNav();
   labelUnnamedControls();
+  const pageId = document.body.dataset.page;
+  if (!projector && pageId && ["home", "guide", "join", "leaderboard", ...PAGES.map((p) => p.id)].includes(pageId) && team().teamName) {
+    const send = () => reportPresence(pageId).catch(() => {});
+    send();
+    setInterval(send, 30000);
+  }
 }

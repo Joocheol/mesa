@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="가짜 주식시장 만들기 워크숍의 프로젝터 화면">
+<title>프로젝터 · 가짜 주식시장</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body class="present-body" data-page="present">
+  <header class="present-bar">
+    <div class="present-brand"><span class="brand-mark">FM</span><div><strong id="present-title">수업을 준비하고 있습니다</strong><span id="present-summary">강사 화면과 연결 중…</span></div></div>
+    <div class="present-status"><span class="pill" id="present-phase">준비</span><span class="pill"><strong id="present-active">0</strong>대 접속</span><span class="pill hidden" id="present-submissions">0팀 제출</span><time id="present-timer">00:00</time></div>
+  </header>
+  <main class="present-main">
+    <section class="present-cover" id="present-cover">
+      <p class="eyebrow" id="cover-eyebrow">수업 준비</p>
+      <h1 id="cover-title">가짜 주식시장 만들기</h1>
+      <p class="present-lead" id="cover-message">화면에 표시된 주소로 입장하세요.</p>
+      <div class="present-join"><span>참가자 입장</span><strong id="projector-join-url">—</strong><span>수업 코드 <b id="projector-class-code">MESA</b></span></div>
+    </section>
+    <iframe id="activity-frame" class="activity-frame hidden" title="현재 활동 공용 화면"></iframe>
+  </main>
+  <div class="present-error hidden" id="present-error"></div>
+<script type="module" src="assets/js/pages/present.js"></script>
+</body>
+</html>

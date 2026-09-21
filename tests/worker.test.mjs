@@ -70,8 +70,58 @@ test("static and API responses include baseline security headers", async () => {
   const page = await worker.default.fetch(request("/"), env);
   assert.equal(page.status, 200);
   assert.equal(page.headers.get("x-content-type-options"), "nosniff");
-  assert.match(page.headers.get("content-security-policy"), /frame-ancestors 'none'/);
+  assert.match(page.headers.get("content-security-policy"), /frame-ancestors 'self'/);
   const api = await worker.handleApi(request("/api/vote/state?class_code=MESA&activity_id=round3"), env);
   assert.equal(api.headers.get("referrer-policy"), "strict-origin-when-cross-origin");
   assert.equal((await api.json()).open, false);
+});
+
+test("facilitator state is private to the instructor and presentation is sanitized", async () => {
+  const env = makeEnv();
+  const login = await worker.handleApi(request("/api/instructor/login", { method: "POST", json: { password: "teacher-pass" } }), env);
+  const cookie = login.headers.get("set-cookie").split(";")[0];
+  const update = await worker.handleApi(request("/api/instructor/facilitation", {
+    method: "POST",
+    headers: { cookie },
+    json: { classCode: "MESA", activityId: "round1", phase: "activity", durationSeconds: 900, message: "먼저 예상하세요." },
+  }), env);
+  assert.equal(update.status, 200);
+  const denied = await worker.handleApi(request("/api/instructor/facilitation?class_code=MESA"), env);
+  assert.equal(denied.status, 401);
+
+  const publicView = await worker.handleApi(request("/api/presentation?class_code=MESA"), env);
+  const payload = await publicView.json();
+  assert.equal(payload.activityId, "round1");
+  assert.equal(payload.phase, "activity");
+  assert.equal(payload.message, "먼저 예상하세요.");
+  assert.equal(payload.round.revealed, false);
+  assert.equal(payload.round.correctChoice, undefined);
+  assert.ok(payload.remainingSeconds <= 900 && payload.remainingSeconds >= 898);
+});
+
+test("50 simultaneous devices can check in, vote, and read presentation state", async () => {
+  const env = makeEnv();
+  const login = await worker.handleApi(request("/api/instructor/login", { method: "POST", json: { password: "teacher-pass" } }), env);
+  const cookie = login.headers.get("set-cookie").split(";")[0];
+  await worker.handleApi(request("/api/instructor/facilitation", {
+    method: "POST", headers: { cookie },
+    json: { classCode: "MESA", activityId: "round1", phase: "activity", durationSeconds: 900, message: "" },
+  }), env);
+  const devices = Array.from({ length: 50 }, (_, i) => ({
+    classCode: "MESA", voterId: `device-${i}`, teamName: `팀 ${i + 1}`, activityId: "round1",
+  }));
+  const checkins = await Promise.all(devices.map((entry) => worker.handleApi(request("/api/presence", { method: "POST", json: entry }), env)));
+  assert.ok(checkins.every((response) => response.status === 200));
+
+  const votes = await Promise.all(devices.map((entry, i) => worker.handleApi(request("/api/vote", {
+    method: "POST",
+    json: { ...entry, choice: ["A", "B", "C"][i % 3], confidence: 60, reason: "부하 검증용 응답" },
+  }), env)));
+  assert.ok(votes.every((response) => response.status === 200));
+
+  const reads = await Promise.all(Array.from({ length: 50 }, () => worker.handleApi(request("/api/presentation?class_code=MESA"), env)));
+  const snapshots = await Promise.all(reads.map((response) => response.json()));
+  assert.ok(reads.every((response) => response.status === 200));
+  assert.ok(snapshots.every((snapshot) => snapshot.activeDevices === 50));
+  assert.ok(snapshots.every((snapshot) => snapshot.round.submissionCount === 50));
 });

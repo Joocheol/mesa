@@ -5,7 +5,7 @@ import { PAGES } from "../pages.js";
 initChrome();
 const form = $("#join-form");
 const state = loadState();
-form.classCode.value = state.classCode || "MESA";
+form.classCode.value = new URLSearchParams(location.search).get("class") || state.classCode || "MESA";
 form.teamName.value = state.teamName || "";
 form.members.value = state.members || "";
 const done = (state.completed || []).length;

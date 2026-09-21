@@ -110,6 +110,17 @@ class StaticSiteTests(unittest.TestCase):
         ui = (SITE / "assets/js/ui.js").read_text(encoding="utf-8")
         self.assertIn('href="guide.html#${anchor}"', ui)
 
+    def test_facilitator_and_projector_surfaces_exist(self):
+        facilitator = (SITE / "facilitate.html").read_text(encoding="utf-8")
+        projector = (SITE / "present.html").read_text(encoding="utf-8")
+        self.assertIn("강사 노트북 전용", facilitator)
+        self.assertIn("assets/js/pages/facilitate.js", facilitator)
+        self.assertIn("activity-frame", projector)
+        self.assertIn("assets/js/pages/present.js", projector)
+        worker = (ROOT / "worker/index.js").read_text(encoding="utf-8")
+        self.assertIn('path === "/api/presentation"', worker)
+        self.assertIn('path === "/api/presence"', worker)
+
     def test_csv_hash_matches_metadata_and_is_chronological(self):
         dataset = json.loads((SITE / "assets/data/dataset.json").read_text(encoding="utf-8"))
         csv = SITE / "assets/data" / dataset["csv"]
