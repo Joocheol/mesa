@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1a · 골턴 보드와 곱셈 세계 · 가짜 주식시장</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="galton">
+<main class="shell">
+  <div data-page-head data-weapon="팀 실습"></div>
+
+  <section class="section">
+    <div class="section-head"><div><p class="eyebrow">A · 더하는 세계</p><h2>골턴 보드 — 공이 떨어지기 전에 바닥 모양을 그려 보세요</h2></div></div>
+    <div class="grid two">
+      <div class="card">
+        <div class="controls">
+          <div class="field"><label>못의 층수 <span class="value" data-out="rows"></span></label><input type="range" id="rows" min="4" max="24" value="12"></div>
+          <div class="field"><label>공 개수 <span class="value" data-out="balls"></span></label><input type="range" id="balls" min="100" max="5000" step="100" value="1000"></div>
+          <div class="field"><label>오른쪽으로 튈 확률 <span class="value" data-out="p"></span></label><input type="range" id="p" min="0.3" max="0.7" step="0.05" value="0.5"></div>
+        </div>
+        <div class="actions"><button class="button primary" id="drop" type="button">공 떨어뜨리기</button><button class="button" id="stop" type="button">멈춤</button><label class="small" style="margin:0"><input type="checkbox" id="fast"> 애니메이션 없이 즉시</label></div>
+        <canvas class="board" id="board" width="640" height="420"></canvas>
+      </div>
+      <div class="card">
+        <div class="field"><label for="galton-predict">실행 전 예상: 바닥 분포는 어떤 모양일까? 층수를 24로 올리면?</label><textarea id="galton-predict"></textarea></div>
+        <div class="chart" id="landing"></div>
+        <div class="legend"><span style="--c:#54e5ca">관측</span><span style="--c:#ffb454">이항분포</span><span style="--c:#ff6b7a">정규 근사</span></div>
+        <p class="small muted" id="galton-note">아직 떨어진 공이 없습니다.</p>
+      </div>
+    </div>
+    <div class="callout"><p class="eyebrow">정리 한 줄</p>독립적인 작은 충격을 <strong>더하면</strong> 정규분포가 나온다(중심극한정리). 층수가 늘수록 이항분포는 정규분포에 가까워지고, 공이 늘수록 관측이 이론에 가까워진다 — 하지만 오차는 1/√N으로 느리게 준다.</div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><p class="eyebrow">B · 곱하는 세계</p><h2>같은 평균, 다른 운명</h2></div></div>
+    <div class="grid two">
+      <div class="card">
+        <p>100원에서 시작해 <strong>+20%</strong> 오른 뒤 <strong>−20%</strong> 내리면? <span class="mono">100 → 120 → 96</span>. 평균 수익률은 0인데 돈은 줄었습니다.</p>
+        <div class="callout question"><p class="eyebrow">실행 전 예상</p>매회 50% 확률로 +20% 또는 −20%, 100회 반복, 경로 1,000개. 최종 자산의 <strong>평균</strong>과 <strong>중앙값</strong>은 각각 얼마쯤일까? 원금 100보다 적게 끝나는 경로는 몇 %일까?
+          <div class="controls" style="margin-top:.6rem">
+            <div class="field"><label>평균 예상</label><input type="number" id="guess-mean" placeholder="예: 100"></div>
+            <div class="field"><label>중앙값 예상</label><input type="number" id="guess-median" placeholder="예: 100"></div>
+            <div class="field"><label>원금 미만 비율(%) 예상</label><input type="number" id="guess-loss" placeholder="예: 50"></div>
+          </div>
+        </div>
+        <div class="controls">
+          <div class="field"><label>상승률 % <span class="value" data-out="up"></span></label><input type="range" id="up" min="5" max="50" step="5" value="20"></div>
+          <div class="field"><label>하락률 % <span class="value" data-out="down"></span></label><input type="range" id="down" min="5" max="50" step="5" value="20"></div>
+          <div class="field"><label>반복 횟수 <span class="value" data-out="steps"></span></label><input type="range" id="steps" min="10" max="300" step="10" value="100"></div>
+          <div class="field"><label>시드 <span class="value" data-out="seed"></span></label><input type="range" id="seed" min="1" max="99" value="1"></div>
+        </div>
+        <div class="actions"><button class="button primary" id="run-compound" type="button">1,000경로 실행</button></div>
+        <div id="compound-stats" class="grid three"></div>
+      </div>
+      <div class="card">
+        <div class="chart" id="compound-paths"></div>
+        <p class="chart-caption">경로 20개 (로그축)</p>
+        <div class="chart" id="compound-hist"></div>
+        <p class="chart-caption">최종 자산 분포 (1,000경로) · 점선: 평균 / 중앙값 / 원금</p>
+      </div>
+    </div>
+    <div class="callout"><p class="eyebrow">정리 한 줄</p>주가는 더해지지 않고 <strong>곱해진다</strong>. 그래서 평균은 소수의 대박 경로가 끌어올리고, 대부분의 경로는 그보다 못하다. 곱셈 세계를 덧셈 세계로 되돌리는 도구가 바로 <strong>로그수익률</strong>이다 — 다음 페이지부터 계속 쓴다.</div>
+    <div class="card">
+      <div class="field"><label for="galton-learned">실행 후 — 예상과 달랐던 점, 그 이유</label><textarea id="galton-learned"></textarea></div>
+      <div class="actions"><button class="button" type="button" id="save">저장</button><span id="save-status" class="small muted"></span></div>
+    </div>
+  </section>
+
+  <nav data-page-nav></nav>
+</main>
+<script type="module" src="assets/js/pages/galton.js"></script>
+</body>
+</html>
