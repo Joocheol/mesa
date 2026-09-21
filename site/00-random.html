@@ -31,11 +31,22 @@
   </section>
 
   <section class="section card highlight">
-    <div class="section-head"><div><p class="eyebrow">검사</p><h2>어느 쪽이 사람인가?</h2></div><div class="actions"><button class="button primary" type="button" id="analyze">첫 판정 실행</button><button class="button hidden" type="button" id="retry">새 수열로 다시 도전</button></div></div>
-    <p class="small muted">먼저 수열을 완성해 판정하세요. 검사 규칙은 첫 제출 뒤 공개됩니다.</p>
-    <p class="small muted hidden" id="detector-rules">검사는 세 가지를 함께 비교합니다. ① <strong>연속 묶음 수(runs)</strong>: 공정한 동전 30개는 평균 15.5개 묶음, 즉 평균 14.5번 앞·뒤가 바뀝니다. ② <strong>최장 연속</strong>: 같은 면이 5번쯤 이어져도 이상하지 않습니다. ③ <strong>앞·뒤 균형</strong>: 사람은 정확한 반반을 지나치게 선호합니다. ‘사람다움 지수’는 비교용 점수이지 사람일 확률이 아닙니다. 규칙을 본 뒤 다시 도전하면 검사를 속일 수도 있습니다 — 알려진 검사는 게임의 대상이 된다는 것이 두 번째 교훈입니다.</p>
+    <div class="section-head"><div><p class="eyebrow">검사</p><h2>어느 쪽이 사람인가?</h2></div><div class="actions"><button class="button primary" type="button" id="analyze">이번 판 판정</button><button class="button hidden" type="button" id="retry">다음 판 추가</button><button class="button small hidden" type="button" id="reset-series">누적 기록 초기화</button></div></div>
+    <p class="small muted" id="round-prompt">먼저 수열을 완성해 판정하세요. 검사 규칙은 첫 제출 뒤 공개됩니다.</p>
+    <p class="small muted hidden" id="detector-rules">검사는 네 가지를 함께 봅니다. ① <strong>연속 묶음 수(runs)</strong>와 길이 1짜리 run의 비율, ② <strong>가장 긴 run 하나가 아니라 상위 3개의 분포</strong>, ③ <strong>앞·뒤 균형</strong>, ④ <strong>같은 팀이 여러 판에서 남긴 누적 증거</strong>입니다. 긴 run이 주는 ‘동전다움’ 이득에는 상한이 있고, 9개 안팎의 극단적인 run은 다시 의심 신호가 됩니다. 한 판의 영향도 제한해 의도적으로 만든 한 수열이 전체 판정을 지배하지 못하게 합니다.</p>
     <div class="grid two" id="analysis"></div>
     <div id="verdict" class="status hidden"></div>
+    <div class="card soft hidden" id="series" style="margin-top:.8rem">
+      <div class="section-head"><div><p class="eyebrow">같은 팀 누적 판정</p><h3>한 판보다 여러 판</h3></div></div>
+      <div class="grid three">
+        <div class="stat"><span class="number" id="human-probability">50%</span><span class="label">사람 수열 누적 추정확률</span></div>
+        <div class="stat"><span class="number" id="round-count">0 / 5</span><span class="label">완료한 판 · 3판 권장</span></div>
+        <div class="stat"><span class="number">±1.10</span><span class="label">한 판이 줄 수 있는 최대 근거</span></div>
+      </div>
+      <p class="small" id="series-summary"></p>
+      <div class="table-wrap"><table><thead><tr><th>판</th><th class="num">내 지수</th><th class="num">동전 지수</th><th class="num">제한된 근거</th><th class="num">누적 확률</th></tr></thead><tbody id="round-history"></tbody></table></div>
+      <p class="small muted">확률은 공정한 동전과 수업용 인간 행동 모형을 비교하고 각 판을 별도 증거로 취급한 내부 추정값입니다. 실제 신원 확률이나 검증된 진단 정확도가 아닙니다.</p>
+    </div>
   </section>
 
   <section class="section grid two">
