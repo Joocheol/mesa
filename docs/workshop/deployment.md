@@ -29,7 +29,15 @@ python3 scripts/build_sites_worker.py
 | `INSTRUCTOR_PASSWORD_HASH` | `echo -n '비밀번호' \| sha256sum` 의 hex |
 | `SESSION_SIGNING_SECRET` | 임의의 긴 문자열 |
 
-D1 바인딩 이름은 `DB`. 마이그레이션은 `drizzle/0000_classroom.sql`.
+D1 바인딩 이름은 `DB`. `drizzle/`의 마이그레이션이 순서대로 적용된다. 진행 상태와 접속 현황은 `0003_facilitation.sql`에 추가되어 있다.
+
+### 외부 참가자 수업
+
+- Sites 접근 모드를 공개로 전환해야 강의실 Windows PC와 외부 참가자가 로그인 없이 접속할 수 있다.
+- 공개 사이트에서는 팀명·판별 이유·집계 결과만 저장한다. 이름·이메일·사내 자료 등 민감한 정보는 입력하지 않는다.
+- 개인 노트북에서 `facilitate.html`, Windows PC에서 `present.html?class=MESA`, 참가자는 `join.html?class=MESA`를 연다.
+- 접속 현황은 참가 기기가 30초마다 보내는 팀명·현재 활동·시각만 보관한다. 강사 화면은 최근 2분 접속과 최근 10분 기기를 구분한다.
+- 50개 기기의 동시 접속·투표·공용 화면 조회를 자동 테스트하며, 정적 자산은 캐시되고 공용 화면은 3초마다 갱신된다.
 
 ## API 요약
 
@@ -39,8 +47,11 @@ D1 바인딩 이름은 `DB`. 마이그레이션은 `drizzle/0000_classroom.sql`.
 | `POST /api/vote` | 팀 판별 제출 (열려 있고 비공개일 때만) |
 | `POST /api/score` | 생성 점수 (`repair`, `abm`) |
 | `GET /api/leaderboard?class_code` | 공개된 라운드의 투표 + 점수 |
+| `GET /api/presentation?class_code` | 프로젝터용 현재 활동·타이머·안전한 집계 |
+| `POST /api/presence` | 팀 기기의 현재 활동 신호 (30초 주기) |
 | `POST /api/instructor/login` | 쿠키 발급 (8시간) |
-| `GET /api/instructor/results`, `/scores` · `POST /state`, `/reset` | 강사 조작 |
+| `GET /api/instructor/results`, `/scores`, `/presence`, `/facilitation` | 강사용 수업 상태 |
+| `POST /api/instructor/state`, `/facilitation`, `/reset` | 강사 조작 |
 
 라운드 상태 기본값: R1·R2 열림, **R3 닫힘(수업 진행 잠금)**. 이는 공개 데이터의 보안 장치가 아니라 진행 순서를 위한 UI 상태다. 초기화도 같은 기본값으로 돌아간다.
 

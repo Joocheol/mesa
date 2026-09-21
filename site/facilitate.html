@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="가짜 주식시장 만들기 워크숍의 강사용 진행 화면">
+<title>수업 진행 · 가짜 주식시장</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="facilitate">
+<main class="shell facilitate-shell">
+  <div class="page-head"><div><p class="eyebrow">강사 노트북 전용</p><h1>수업 진행</h1><p class="lead muted">활동·타이머·프로젝터를 한 화면에서 제어합니다. 이 화면은 프로젝터에 띄우지 마세요.</p></div><div class="meta"><span class="pill" id="connection-state">확인 중…</span></div></div>
+
+  <form id="login" class="card" style="max-width:480px">
+    <div class="field"><label for="password">강사 비밀번호</label><input id="password" type="password" autocomplete="current-password"></div>
+    <div class="actions"><button class="button primary" type="submit">강사 화면 열기</button><a class="button" href="instructor.html">기존 콘솔</a></div>
+    <div id="login-status" class="status hidden"></div>
+  </form>
+
+  <div id="facilitator" class="hidden">
+    <section class="facilitate-grid">
+      <div class="card facilitate-control">
+        <div class="section-head"><div><p class="eyebrow">지금 보여 줄 활동</p><h2 id="current-title">—</h2></div><span class="phase-badge" id="current-phase">준비</span></div>
+        <div class="controls">
+          <div class="field"><label for="class-code">수업 코드</label><input id="class-code" type="text" value="MESA" maxlength="12"></div>
+          <div class="field wide"><label for="activity">활동</label><select id="activity"></select></div>
+          <div class="field"><label for="minutes">활동 시간</label><input id="minutes" type="number" min="1" max="120" value="20"></div>
+        </div>
+        <div class="field"><label for="message">프로젝터 안내 문구 (선택)</label><input id="message" type="text" maxlength="240" placeholder="예: 실행 전에 팀의 예상을 먼저 적으세요."></div>
+        <div class="facilitator-timer" id="facilitator-timer">00:00</div>
+        <div class="actions">
+          <button class="button" id="prepare" type="button">준비 화면</button>
+          <button class="button primary" id="start" type="button">활동 시작</button>
+          <button class="button" id="pause" type="button">일시정지</button>
+          <button class="button" id="resume" type="button">계속</button>
+          <button class="button warn" id="debrief" type="button">5분 디브리프</button>
+          <button class="button" id="break" type="button">10분 휴식</button>
+          <button class="button" id="next" type="button">다음 활동 →</button>
+          <button class="button danger" id="end" type="button">수업 종료</button>
+        </div>
+        <div id="control-status" class="status hidden"></div>
+      </div>
+
+      <aside class="card facilitate-links">
+        <p class="eyebrow">강의실 Windows PC</p><h3>프로젝터 화면</h3>
+        <p class="small muted">아래 주소를 Windows PC에서 열고 F11을 누르세요. 강사 정보와 팀별 답안은 표시되지 않습니다.</p>
+        <a class="button primary" id="open-present" target="_blank" rel="noreferrer">프로젝터 화면 열기 ↗</a>
+        <p class="mono small break-all" id="present-url"></p>
+        <hr class="soft-rule">
+        <p class="eyebrow">참가자 입장</p>
+        <button class="button" id="copy-join" type="button">참가 링크 복사</button>
+        <p class="mono small break-all" id="join-url"></p>
+        <div class="stat-row"><div class="stat"><span class="number" id="active-devices">0</span><span class="label">최근 2분 접속 기기</span></div><div class="stat"><span class="number" id="known-devices">0</span><span class="label">최근 10분 기기</span></div></div>
+      </aside>
+    </section>
+
+    <section id="round-control" class="card highlight hidden" style="margin-top:1rem">
+      <div class="section-head"><div><p class="eyebrow">판별 라운드 제어</p><h3 id="round-title">—</h3></div><strong id="round-answer">—</strong></div>
+      <p id="round-summary" class="muted"></p>
+      <div class="actions"><button class="button" id="toggle-round" type="button">—</button><button class="button primary" id="reveal-round" type="button">정답 공개</button></div>
+    </section>
+
+    <section class="grid two" style="margin-top:1rem">
+      <div class="card"><div class="section-head"><div><p class="eyebrow">현재 접속 현황</p><h3>팀·기기별 위치</h3></div><span class="small muted">30초마다 갱신</span></div><div class="table-wrap"><table id="presence-table"></table></div></div>
+      <div class="card"><div class="section-head"><div><p class="eyebrow">판별 제출</p><h3>R1 · R2 · R3</h3></div><a class="button small" href="leaderboard.html" target="_blank">리더보드 ↗</a></div><div class="grid three" id="round-counts"></div></div>
+    </section>
+
+    <div class="actions"><button class="button small" id="logout" type="button">로그아웃</button><a class="button small" href="instructor.html">초기화·상세 답안 콘솔</a></div>
+  </div>
+</main>
+<script type="module" src="assets/js/pages/facilitate.js"></script>
+</body>
+</html>

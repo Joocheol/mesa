@@ -42,6 +42,8 @@ node scripts/dev_server.mjs 8787      # http://127.0.0.1:8787 · 강사 비밀�
 ```
 site/                 정적 사이트 (외부 CDN 없음, ES 모듈)
   guide.html          초심자를 위한 10분 개념 가이드
+  facilitate.html     개인 노트북용 강사 진행·타이머·접속 현황
+  present.html        강의실 Windows PC용 읽기 전용 프로젝터 화면
   assets/js/          rng · stats · models(GBM/t/GARCH-t/bootstrap) · auction · abm · life · chart · rounds · classroom
   assets/js/pages/    페이지별 스크립트
   assets/data/        KOSPI 200(활성)·SK하이닉스 스냅샷 + 메타데이터, dataset.json, 강사 작성 LLM 가상 예시
@@ -52,7 +54,7 @@ tests/                node --test (핵심 계산) · unittest (정적 사이트 
 docs/workshop/        강사 진행안 · 활동지 · 역할 카드 · 경매 규칙 · 설명서 템플릿 · 배포
 ```
 
-모든 시뮬레이션(GBM, t 충격, GARCH(1,1)-t 최대우도 적합, 블록 재추출, 단일가 경매, 규칙 기반 에이전트 시장)은 **브라우저에서** 실행된다. 서버는 팀 투표·점수·라운드 열기/공개만 담당하며, 서버가 없어도 각 팀 화면은 동작한다(오프라인 공개 버튼).
+모든 시뮬레이션(GBM, t 충격, GARCH(1,1)-t 최대우도 적합, 블록 재추출, 단일가 경매, 규칙 기반 에이전트 시장)은 **브라우저에서** 실행된다. 서버는 팀 투표·점수·라운드 열기/공개와 강사–프로젝터 동기화, 최소한의 접속 현황만 담당하며, 서버가 없어도 각 팀 화면은 동작한다(오프라인 공개 버튼).
 
 ## 데이터
 
