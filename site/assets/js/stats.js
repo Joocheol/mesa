@@ -133,12 +133,13 @@ export function humanVerdict(analysis) {
   if (!analysis) return { score: 0, label: "입력 없음" };
   let score = 0;
   const notes = [];
-  if (analysis.zRuns > 1.3) { score += 2; notes.push(`교대가 너무 잦음 (runs z=${analysis.zRuns.toFixed(2)})`); }
-  else if (analysis.zRuns > 0.7) { score += 1; notes.push("교대가 조금 잦음"); }
-  if (analysis.longest <= Math.floor(analysis.expectedLongest) - 1) { score += 2; notes.push(`최장 연속 ${analysis.longest} — 기대값 ${analysis.expectedLongest.toFixed(1)}보다 짧음`); }
-  else if (analysis.longest <= Math.floor(analysis.expectedLongest)) { score += 1; notes.push("최장 연속이 기대보다 약간 짧음"); }
+  // Thresholds tuned so that a fair coin is flagged "human" in roughly 10% of 30-flip sequences.
+  if (analysis.zRuns > 1.6) { score += 2; notes.push(`교대가 너무 잦음 (runs z=${analysis.zRuns.toFixed(2)})`); }
+  else if (analysis.zRuns > 1.0) { score += 1; notes.push(`교대가 조금 잦음 (runs z=${analysis.zRuns.toFixed(2)})`); }
+  if (analysis.longest <= 3) { score += 2; notes.push(`최장 연속 ${analysis.longest} — 기대값 ${analysis.expectedLongest.toFixed(1)}보다 훨씬 짧음`); }
+  else if (analysis.longest === 4) { score += 1; notes.push("최장 연속 4 — 기대보다 약간 짧음"); }
   const share = analysis.heads / analysis.n;
-  if (Math.abs(share - 0.5) < 0.04 && analysis.n >= 20) { score += 1; notes.push("앞/뒤 비율이 너무 정확히 반반"); }
+  if (Math.abs(share - 0.5) < 0.02 && analysis.n >= 20) { score += 1; notes.push("앞/뒤가 정확히 반반"); }
   const label = score >= 3 ? "사람이 쓴 것 같음" : score === 2 ? "판단 유보" : "동전(난수) 같음";
   return { score, label, notes };
 }

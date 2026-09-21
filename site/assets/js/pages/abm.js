@@ -24,7 +24,7 @@ const PARAM_RANGE = { m: [0, 0.2, 0.01], k: [1, 10, 1], L: [0.01, 0.3, 0.01], q:
 
 function clauseHtml(t, ci, clause) {
   const conds = (i) => `<select data-cond="${t.type}:${ci}:${i}">${["", ...Object.keys(CONDITIONS)].map((k) => `<option value="${k}"${(clause.when[i] || "") === k ? " selected" : ""}>${k ? CONDITIONS[k].label : "(조건 없음)"}</option>`).join("")}</select>`;
-  return `<div class="rule"><span class="kw">IF</span>${conds(0)}<span class="kw">AND</span>${conds(1)}<span class="kw">THEN</span><span><select data-then="${t.type}:${ci}">${Object.entries(ACTIONS).map(([k, v]) => `<option value="${k}"${clause.then === k ? " selected" : ""}>${v}</option>`).join("")}</select> <label class="small" style="display:inline">직전가 ± <input type="number" data-offset="${t.type}:${ci}" value="${clause.offset}" step="0.1" min="0" max="10" style="width:64px;display:inline-block">%</label></span></div>`;
+  return `<div class="rule"><span class="kw">IF</span>${conds(0)}<span class="kw">AND</span>${conds(1)}<span class="kw">THEN</span><span class="then"><select data-then="${t.type}:${ci}">${Object.entries(ACTIONS).map(([k, v]) => `<option value="${k}"${clause.then === k ? " selected" : ""}>${v}</option>`).join("")}</select> <label class="small" style="display:inline">직전가 ± <input type="number" data-offset="${t.type}:${ci}" value="${clause.offset}" step="0.1" min="0" max="10" style="width:64px;display:inline-block">%</label></span></div>`;
 }
 
 function renderCards() {
@@ -35,7 +35,7 @@ function renderCards() {
       ${t.clauses.map((c, ci) => clauseHtml(t, ci, c)).join("")}
       <div class="actions"><button class="button small" data-add-clause="${t.type}" type="button">+ 절 추가</button>${t.clauses.length > 1 ? `<button class="button small" data-del-clause="${t.type}" type="button">− 마지막 절 삭제</button>` : ""}<button class="button small" data-reset-type="${t.type}" type="button">템플릿으로</button></div>
       <div class="controls">${params.map((p) => `<div class="field"><label>${PARAM_LABELS[p]} <span class="value" data-pout="${t.type}:${p}">${t.params[p]}</span></label><input type="range" data-param="${t.type}:${p}" min="${PARAM_RANGE[p][0]}" max="${PARAM_RANGE[p][1]}" step="${PARAM_RANGE[p][2]}" value="${t.params[p]}"></div>`).join("")}</div>
-      <p class="small muted">기준가는 에이전트마다 ±4% 흩어져 있고 뉴스에 따라 ±1% 움직입니다. 각 에이전트는 현금 5,000·주식 5주로 시작(시작가 1,000).</p></div>`;
+      <p class="small muted">기준가는 에이전트마다 ±2% 흩어져 있고 뉴스에 따라 ±1% 움직입니다. 각 에이전트는 주식 10주·같은 값의 현금으로 시작(시작가 1,000)하고, 매 라운드 70% 확률로 시장을 봅니다.</p></div>`;
   }).join("");
   $$("[data-count]").forEach((i) => i.addEventListener("change", () => { config.types.find((t) => t.type === i.dataset.count).count = Math.max(0, Number(i.value) || 0); persist(); }));
   $$("[data-cond]").forEach((s) => s.addEventListener("change", () => { const [type, ci, i] = s.dataset.cond.split(":"); const c = config.types.find((t) => t.type === type).clauses[Number(ci)]; const when = [c.when[0] || "", c.when[1] || ""]; when[Number(i)] = s.value; c.when = when.filter(Boolean); if (!c.when.length) c.when = ["always"]; persist(); renderCards(); }));
@@ -56,7 +56,6 @@ function run(cfgOverride) {
 }
 function render(result) {
   lastResult = result;
-  const fundamentalLine = null;
   lineChart($("#price"), [{ values: result.prices, color: COLORS[0], width: 1.6 }], { log: true, xLabel: "라운드", yLabel: "가격" });
   lineChart($("#returns"), [{ values: result.returns, color: COLORS[1], width: 1 }], { yLabel: "로그수익률" });
   const checks = abmChecks(result);

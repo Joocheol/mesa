@@ -119,7 +119,7 @@ export function fitGarchT(trainReturns) {
   const returns = trainReturns.filter(Number.isFinite);
   if (returns.length < 30) return { success: false, message: "GARCH-t 적합에는 추정 수익률이 최소 30개 필요합니다." };
   const scale = sd(returns);
-  if (!(scale > 0)) return { success: false, message: "수익률이 상수여서 분산을 추정할 수 없습니다." };
+  if (!(scale > 1e-9)) return { success: false, message: "수익률이 상수여서 분산을 추정할 수 없습니다." };
   const z = returns.map((r) => r / scale);
   const objective = (theta) => {
     const { mu, omega, alpha, beta, dof } = unpack(theta);
