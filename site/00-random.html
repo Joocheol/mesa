@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>0 · 사람은 난수를 못 만든다 · 가짜 주식시장</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="random">
+<main class="shell">
+  <div data-page-head data-weapon="전체 게임 · 10분 + 정리 10분"></div>
+
+  <div class="callout question"><p class="eyebrow">시작 질문</p><strong>동전을 던진 것처럼 보이게 손으로 앞/뒤 30개를 적으면, 검사는 그것을 진짜 동전과 구별할 수 있을까?</strong><p class="small muted">팀 예상을 먼저 정하세요: 구별할 수 있다 / 없다. 그리고 왜.</p></div>
+
+  <section class="grid two">
+    <div class="card">
+      <p class="eyebrow">A · 손으로 쓴 수열</p>
+      <h3>동전 없이, 머리로만 30개</h3>
+      <p class="small muted">아래 버튼을 눌러 H(앞)/T(뒤)를 하나씩 입력하세요. 최대한 "무작위처럼" 보이게 적는 것이 목표입니다.</p>
+      <div class="choice-row" style="margin:.4rem 0"><button class="choice" type="button" data-add="H">H 앞</button><button class="choice" type="button" data-add="T">T 뒤</button><button class="button small" type="button" data-undo>← 지우기</button><button class="button small" type="button" data-clear>초기화</button></div>
+      <div class="seq" data-seq-human></div>
+      <p class="small muted"><span data-count-human>0</span> / 30</p>
+    </div>
+    <div class="card">
+      <p class="eyebrow">B · 진짜 동전</p>
+      <h3>난수 생성기가 던진 30개</h3>
+      <p class="small muted">실제 동전을 던져 적어도 됩니다. 시드를 바꾸면 다른 동전이 나옵니다.</p>
+      <div class="actions"><button class="button" type="button" data-flip>동전 30번 던지기</button><label style="margin:0" class="small">시드 <input type="number" data-seed value="7" style="width:90px;display:inline-block"></label></div>
+      <div class="seq" data-seq-coin></div>
+    </div>
+  </section>
+
+  <section class="section card highlight">
+    <div class="section-head"><div><p class="eyebrow">검사</p><h2>어느 쪽이 사람인가?</h2></div><button class="button primary" type="button" id="analyze">검사 실행</button></div>
+    <p class="small muted">검사는 두 가지만 봅니다. ① <strong>교대 횟수(runs)</strong>: 공정한 동전은 30개에서 평균 15.5번 앞/뒤가 바뀝니다. ② <strong>최장 연속</strong>: 30개면 같은 면이 5번쯤 연달아 나오는 것이 정상입니다. 사람은 "너무 규칙적으로 보일까 봐" 교대를 자주 하고 긴 연속을 피합니다.</p>
+    <div class="grid two" id="analysis"></div>
+    <div id="verdict" class="status hidden"></div>
+  </section>
+
+  <section class="section grid two">
+    <div class="card soft">
+      <p class="eyebrow">정리</p>
+      <h3>오늘 하루의 규칙</h3>
+      <ul class="small">
+        <li><strong>진짜처럼 보이는 것 ≠ 진짜.</strong> 그리고 그 차이는 검사로 드러난다.</li>
+        <li>여러분은 하루 종일 두 역할을 번갈아 맡는다: <strong>생성자</strong>(가짜를 만든다)와 <strong>판별자</strong>(가짜를 잡는다).</li>
+        <li>판별할 때는 항상 <strong>확신도(0~100)</strong>를 함께 낸다. 점수는 브라이어 점수 — 확신하고 틀리면 가장 아프다.</li>
+        <li>1946년 울람이 솔리테어 확률을 못 풀어 "그냥 여러 번 해보자"고 한 것이 몬테카를로의 시작. 오늘 만드는 모든 가짜 시장은 그 방법의 후손이다.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <p class="eyebrow">팀 기록</p>
+      <div class="field"><label for="predict">실행 전 예상 (구별할 수 있다 / 없다, 이유)</label><textarea id="predict"></textarea></div>
+      <div class="field"><label for="learned">실행 후 — 예상과 달랐던 점</label><textarea id="learned"></textarea></div>
+      <div class="actions"><button class="button" type="button" id="save">저장</button><span id="save-status" class="small muted"></span></div>
+    </div>
+  </section>
+
+  <nav data-page-nav></nav>
+</main>
+<script type="module" src="assets/js/pages/random.js"></script>
+</body>
+</html>

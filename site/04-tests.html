@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2a · 공개 · 보정 · 검사표 · 가짜 주식시장</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="tests">
+<main class="shell">
+  <div data-page-head data-weapon="판별자 → 검사기 제작"></div>
+
+  <section class="section">
+    <div class="section-head"><div><p class="eyebrow">A · R1 공개</p><h2>정답과 학급 분포</h2></div><span class="pill" id="r1-state">서버 확인 중…</span></div>
+    <div id="r1-reveal" class="card"><p class="muted">강사가 R1을 공개하면 여기에 정답·선택 분포·우리 팀 점수가 나타납니다.</p></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><p class="eyebrow">B · 확신도 보정</p><h2>확신한 만큼 맞았는가?</h2></div></div>
+    <div class="grid two">
+      <div class="card"><div class="chart" id="calibration"></div><p class="chart-caption">가로: 제출한 확신도 · 세로: 그 구간의 실제 정답률 · 대각선 = 완벽한 보정 · 점 크기 = 팀 수</p></div>
+      <div class="card">
+        <div class="table-wrap"><table id="calibration-table"></table></div>
+        <div class="callout"><p class="eyebrow">은행 실무와의 연결</p>확신도 70%로 낸 답이 70%만 맞으면 <strong>보정(calibration)</strong>이 된 것입니다. PD 모형의 등급별 예측 부도율 vs 실제 부도율 비교와 같은 원리이고, 오늘 세 라운드에서 팀의 보정 곡선이 리더보드에 쌓입니다. 틀린 것보다 <em>확신하고 틀린 것</em>이 문제라는 점을 기억하세요.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><p class="eyebrow">C · 말을 숫자로</p><h2>R1에서 적은 이유를 검사 항목으로 번역한다</h2></div></div>
+    <div class="grid two">
+      <div class="card soft">
+        <table>
+          <tr><th>여러분이 쓴 말</th><th>검사 항목</th><th>정의</th></tr>
+          <tr><td>"너무 매끄럽다 / 너무 거칠다"</td><td>연율 변동성</td><td>일별 로그수익률 표준편차 × √252</td></tr>
+          <tr><td>"급락·급등이 있다"</td><td>초과첨도, ±3σ 초과 빈도</td><td>정규분포면 첨도 0, ±3σ 밖은 0.27%</td></tr>
+          <tr><td>"변동이 몰려 있다"</td><td>제곱수익률 자기상관 (lag 1, 5)</td><td>큰 변동 뒤에 큰 변동이 오는가</td></tr>
+          <tr><td>"추세가 있다"</td><td>(오늘은 검사하지 않음)</td><td>150일 표본에서는 드리프트를 구별할 수 없음 — 그것도 결론</td></tr>
+        </table>
+        <div class="field" style="margin-top:.8rem"><label for="my-reason">우리 팀이 R1에 적은 이유 (자동으로 불러옴)</label><textarea id="my-reason" readonly></textarea></div>
+        <div class="field"><label for="translated">그 이유는 어느 검사 항목으로 번역되는가? 번역되지 않는 말은 무엇인가?</label><textarea id="translated"></textarea></div>
+      </div>
+      <div class="card">
+        <p class="eyebrow">추정 구간 실제 vs 모형 (200경로 중앙값과 5~95% 범위)</p>
+        <div class="table-wrap"><table id="metric-table"></table></div>
+        <p class="small muted" id="metric-note"></p>
+      </div>
+    </div>
+    <div class="grid two" style="margin-top:1rem">
+      <div class="card"><div class="chart" id="ret-real"></div><p class="chart-caption">실제 일별 로그수익률 (추정 구간) — 변동이 몰린 구간이 보입니까?</p></div>
+      <div class="card"><div class="chart" id="ret-gbm"></div><p class="chart-caption">GBM 일별 로그수익률 (같은 길이) — 어디를 봐도 비슷합니다</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><p class="eyebrow">D · 순서 섞기</p><h2>분포 검사와 시간구조 검사는 다르다</h2></div><button class="button primary" id="shuffle" type="button">실제 수익률 순서 섞기</button></div>
+    <div class="callout question"><p class="eyebrow">실행 전 예상</p>실제 수익률의 <strong>순서만</strong> 무작위로 섞으면 — 히스토그램은? 첨도는? 제곱수익률 자기상관은? 가격 경로는?</div>
+    <div class="grid two">
+      <div class="card"><div class="chart" id="hist-orig"></div><p class="chart-caption">원본 히스토그램 + 정규분포 겹치기</p><div class="chart" id="path-orig"></div><p class="chart-caption">원본 가격 경로 (로그축)</p></div>
+      <div class="card"><div class="chart" id="hist-shuf"></div><p class="chart-caption">섞은 뒤 히스토그램</p><div class="chart" id="path-shuf"></div><p class="chart-caption">섞은 뒤 가격 경로</p></div>
+    </div>
+    <div class="table-wrap card" style="margin-top:1rem"><table id="shuffle-table"></table></div>
+    <div class="callout"><p class="eyebrow">정리 한 줄</p>히스토그램(분포)은 순서를 모릅니다. <strong>변동성 군집은 시간구조</strong>이고, 그것을 잡는 검사는 제곱수익률 자기상관뿐입니다. 그래서 "정규분포가 아니다"를 고치는 수리(t 충격)와 "변동이 몰린다"를 고치는 수리(GARCH)는 다른 수리입니다 — 다음 페이지.</div>
+    <div class="card" style="margin-top:1rem"><div class="field"><label for="learned">실행 후 — 예상과 달랐던 점</label><textarea id="learned"></textarea></div><div class="actions"><button class="button" id="save" type="button">저장</button><span id="save-status" class="small muted"></span></div></div>
+  </section>
+
+  <nav data-page-nav></nav>
+</main>
+<script type="module" src="assets/js/pages/tests.js"></script>
+</body>
+</html>

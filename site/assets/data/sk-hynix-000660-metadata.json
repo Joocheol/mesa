@@ -1,0 +1,17 @@
+{
+  "instrument": "SK하이닉스 보통주",
+  "symbol": "000660",
+  "market": "KRX 유가증권시장",
+  "currency": "KRW",
+  "frequency": "daily",
+  "price_definition": "수정주가가 아닌 일별 종가(OHLCV 원시 시세)",
+  "source_name": "네이버 금융 공개 차트 시세",
+  "source_url": "https://fchart.stock.naver.com/sise.nhn?symbol=000660&timeframe=day&count=1000&requestType=0",
+  "acquired_at": "2026-09-20 Asia/Seoul",
+  "observation_start": "2022-08-17",
+  "observation_end": "2026-09-18",
+  "observations": 1000,
+  "source_xml_sha256": "7f2fad217aa8c89e6b0f2282805e1c735ad48a400052f19d77dc770ce3761ac1",
+  "csv_sha256": "2d1b24357a7e7b664bc74ddfc1aefb33d3524896da57de08463ec98312f4c09d",
+  "usage_note": "교육용 고정 스냅샷. 재배포·상업적 이용은 원 출처 이용조건을 별도 확인하세요."
+}

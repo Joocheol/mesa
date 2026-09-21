@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>팀 입장 · 가짜 주식시장</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="join">
+<main class="shell" style="max-width:640px">
+  <p class="eyebrow">입장</p>
+  <h1>팀으로 입장</h1>
+  <p class="muted">조당 노트북 한 대. 수업 코드는 강사가 알려 줍니다. 팀명은 리더보드에 그대로 표시됩니다.</p>
+  <form id="join-form" class="card">
+    <div class="field"><label for="classCode">수업 코드</label><input id="classCode" name="classCode" type="text" maxlength="12" autocomplete="off" required></div>
+    <div class="field"><label for="teamName">팀명</label><input id="teamName" name="teamName" type="text" maxlength="40" placeholder="예: 리스크2팀" required></div>
+    <div class="field"><label for="members">팀원 (선택, 이 브라우저에만 저장)</label><input id="members" name="members" type="text" maxlength="120" placeholder="역할을 돌아가며 맡습니다: 질문 설계 / AI 조작 / 검증 / 기록"></div>
+    <div class="actions"><button class="button primary" type="submit">입장하고 0교시로 →</button><a class="button" href="index.html">개요로</a></div>
+    <div id="join-status" class="status hidden"></div>
+  </form>
+  <div class="card soft" style="margin-top:1rem">
+    <p class="eyebrow">이 브라우저에 저장된 진행 상태</p>
+    <p class="small muted" id="progress-note">—</p>
+    <button class="button small danger" id="reset-all" type="button">이 브라우저의 진행 상태 모두 지우기</button>
+  </div>
+</main>
+<script type="module" src="assets/js/pages/join.js"></script>
+</body>
+</html>

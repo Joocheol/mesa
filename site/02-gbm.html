@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1b · 첫 가짜 시장 (GBM) · 가짜 주식시장</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="gbm">
+<main class="shell">
+  <div data-page-head data-weapon="생성자 역할"></div>
+
+  <div class="callout question"><p class="eyebrow">시작 질문</p><strong>드리프트와 변동성, 두 숫자만으로 진짜 주가처럼 보이게 만들 수 있을까?</strong> 실행 전에 팀 예상을 적으세요: "GBM이 실제와 가장 다르게 보일 부분은 ___ 일 것이다."</div>
+
+  <section class="grid two">
+    <div class="card">
+      <p class="eyebrow">추정 구간에서 뽑은 모수</p>
+      <div id="estimates" class="grid three"></div>
+      <p class="small muted">추정 구간(처음 60%)의 일별 로그수익률로 계산했습니다. 검증·최종 구간은 쓰지 않았습니다. 가격 과정의 산술 드리프트 μ = 로그수익률 평균×252 + σ²/2.</p>
+      <div class="controls">
+        <div class="field"><label>연 드리프트 μ (%) <span class="value" data-out="mu"></span></label><input type="range" id="mu" min="-50" max="150" step="1"></div>
+        <div class="field"><label>연 변동성 σ (%) <span class="value" data-out="sigma"></span></label><input type="range" id="sigma" min="5" max="120" step="1"></div>
+        <div class="field"><label>기간 (거래일) <span class="value" data-out="days"></span></label><input type="range" id="days" min="60" max="504" step="6" value="252"></div>
+        <div class="field"><label>시드 <span class="value" data-out="seed"></span></label><input type="range" id="seed" min="1" max="999" value="42"></div>
+      </div>
+      <div class="actions"><button class="button primary" id="run" type="button">경로 20개 + 분포 1,000개 실행</button><button class="button" id="reset-params" type="button">추정값으로 되돌리기</button></div>
+      <div class="field"><label for="assumption">우리 모형이 가정한 것 (한 줄씩)</label><textarea id="assumption" placeholder="예: 로그수익률은 서로 독립이고 정규분포를 따른다. 변동성은 1년 내내 같다. …"></textarea></div>
+      <div class="field"><label for="changed">모수 하나를 바꿔 본 결과</label><textarea id="changed" placeholder="무엇을 바꿨고, 그림이 어떻게 달라졌는가"></textarea></div>
+      <div class="actions"><button class="button" id="save" type="button">저장</button><span id="save-status" class="small muted"></span></div>
+    </div>
+    <div class="card">
+      <div class="chart" id="paths"></div>
+      <p class="chart-caption">GBM 경로 20개 · 시작 100 · 로그축 · 정확한 로그정규 전이 S(t+dt)=S(t)·exp((μ−σ²/2)dt+σ√dt·Z)</p>
+      <div class="chart" id="finals"></div>
+      <p class="chart-caption">최종 가격 분포 (1,000경로) · 점선: 평균 / 중앙값</p>
+      <div id="gbm-stats" class="grid three"></div>
+    </div>
+  </section>
+
+  <div class="callout"><p class="eyebrow">기억할 것</p>GBM은 "로그수익률이 정규분포"라고 <strong>가정하고 만든</strong> 모형이다. 그래서 GBM에서 나온 수익률에 정규성 검정을 하면 당연히 통과한다. 검사는 다음 페이지에서 <strong>실제 데이터</strong>에 대고 한다.</div>
+
+  <nav data-page-nav></nav>
+</main>
+<script type="module" src="assets/js/pages/gbm.js"></script>
+</body>
+</html>

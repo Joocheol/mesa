@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5 · 설명서와 되돌아보기 · 가짜 주식시장</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="final">
+<main class="shell">
+  <div data-page-head data-weapon="팀 작성 15분 · 교차 심사 10분 · 되돌아보기 10분 · 마무리 5분"></div>
+
+  <section class="grid two">
+    <div class="card">
+      <p class="eyebrow">A · 한 장 모형 설명서</p>
+      <div class="field"><label for="card-goal">재현 목표 — 어떤 현실 특성을 재현하려 했는가?</label><textarea id="card-goal"></textarea></div>
+      <div class="field"><label for="card-evidence">검증 근거 — 어떤 자료·구간·지표·반복분포로 비교했는가?</label><textarea id="card-evidence"></textarea></div>
+      <div class="field"><label for="card-failure">사용하기 어려운 상황 — 어떤 시장·기간·의사결정에는 쓰면 안 되는가?</label><textarea id="card-failure"></textarea></div>
+      <div class="field"><label for="card-missing">빠진 참여자·정보·거래 구조 — 3a·3b에서 무엇을 봤는가?</label><textarea id="card-missing"></textarea></div>
+      <div class="field"><label for="card-next">다음 실험 — 가정 하나만 바꾼다면 무엇이며 어떤 결과를 예상하는가?</label><textarea id="card-next"></textarea></div>
+      <p class="small muted">일부 통계적 특징의 재현은 미래 가격의 정확한 예측을 뜻하지 않는다.</p>
+    </div>
+    <div class="card">
+      <p class="eyebrow">B · 오늘 우리 팀의 기록 (자동)</p>
+      <div id="summary"></div>
+      <p class="eyebrow" style="margin-top:1rem">C · 교차 심사 (짝 팀이 채움, 0~2점)</p>
+      <div class="table-wrap"><table id="rubric"></table></div>
+      <div class="field"><label for="review-note">심사 팀의 한 문장 — 근거가 부족한 주장 하나, 추가 실험 하나</label><textarea id="review-note"></textarea></div>
+    </div>
+  </section>
+
+  <section class="card highlight" style="margin-top:1rem">
+    <p class="eyebrow">D · 처음 판단 다시 보기</p>
+    <div id="lookback"></div>
+    <div class="field" style="margin-top:.6rem"><label for="lookback-note">R1에서 우리가 쓴 이유를 지금 다시 읽으면 — 무엇이 검사로 바뀌었고, 무엇은 끝내 검사가 되지 못했는가?</label><textarea id="lookback-note"></textarea></div>
+  </section>
+
+  <section class="card" style="margin-top:1rem">
+    <div class="actions"><button class="button primary" id="save" type="button">저장</button><button class="button" id="download-md" type="button">설명서 Markdown 내려받기</button><button class="button" id="download-json" type="button">팀 기록 전체 JSON 내려받기</button><a class="button" href="leaderboard.html">리더보드 →</a></div>
+    <div id="final-status" class="status hidden"></div>
+    <div class="callout"><p class="eyebrow">마지막 메시지</p>우리가 만든 것은 현실의 몇 가지 특징을 재현하는 시장입니다. 완성형 시장과의 거리는 아직 검증하지 못한 가정의 수만큼 남아 있습니다. 그리고 오늘 배운 습관 하나 — <strong>AI가 만든 결과는 검사를 통과할 때까지 그럴듯한 서사일 뿐이다.</strong></div>
+    <div class="grid two">
+      <div class="card soft"><p class="eyebrow">지금 시도해 볼 것</p><ul class="small"><li>본인 업무 시계열(공개 지수만)로 2a 검사표 돌려 보기</li><li>기존 리스크 모형의 확신도 보정 곡선 그려 보기</li><li>스트레스 시나리오를 3b식 규칙 조합으로 설명해 보기</li></ul></div>
+      <div class="card soft"><p class="eyebrow">지켜볼 것</p><ul class="small"><li>LLM 에이전트 시장 연구의 행동 이질성 결과</li><li>생성모형(diffusion) 기반 시나리오의 검증 기준</li><li>규제 당국의 AI 모형 검증 가이드</li></ul></div>
+    </div>
+  </section>
+
+  <nav data-page-nav></nav>
+</main>
+<script type="module" src="assets/js/pages/final.js"></script>
+</body>
+</html>
