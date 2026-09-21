@@ -175,3 +175,7 @@ canvas.board { width: 100%; height: auto; display: block; background: var(--bg-2
   body { background: #fff; color: #000; }
   .card { box-shadow: none; border-color: #bbb; }
 }
+
+/* compact result tables */
+td.nowrap, th.nowrap { white-space: nowrap; }
+#result-table td:nth-child(5), #result-table td:nth-child(6) { white-space: nowrap; }

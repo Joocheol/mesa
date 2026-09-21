@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3a · 사람이 시장이 된다 · 가짜 주식시장</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="market">
+<main class="shell">
+  <div data-page-head data-weapon="전체 게임 · 강사 화면 1개"></div>
+  <div class="callout question"><p class="eyebrow">시작 질문</p><strong>여러분의 시장에는 주가가 있습니다. 그런데 그 주식을 사고파는 사람은 어디에 있나요?</strong><p class="small muted">이 화면은 강사가 한 대로 진행합니다. 각 팀은 역할 카드를 받고, 공통 뉴스를 듣고, 매수/매도/관망과 1주 지정가를 강사에게 말합니다. 4라운드 뒤 "우리는 무슨 규칙을 따랐는가"를 한두 문장으로 적습니다 — 그 문장이 다음 페이지의 에이전트가 됩니다.</p></div>
+
+  <section class="grid two">
+    <div class="card">
+      <div class="section-head"><div><p class="eyebrow">라운드 <span data-round></span></p><h3>공통 뉴스</h3></div><div class="stat"><span class="number" data-price></span><span class="label">직전 가격</span></div></div>
+      <div class="callout" data-news></div>
+      <div class="table-wrap"><table id="orders"></table></div>
+      <div class="actions"><button class="button primary" id="clear" type="button">이 라운드 체결</button><button class="button" id="preview" type="button">체결 미리보기</button><button class="button small" id="add-team" type="button">+ 팀 추가</button><button class="button small danger" id="reset" type="button">시장 초기화</button></div>
+      <div id="market-status" class="status hidden"></div>
+      <div id="preview-table" class="table-wrap"></div>
+    </div>
+    <div class="card">
+      <div class="chart" id="price-chart"></div><p class="chart-caption">라운드별 체결 가격 (무거래 라운드는 직전 가격 유지)</p>
+      <div class="table-wrap"><table id="history"></table></div>
+      <div class="actions"><button class="button small" id="export" type="button">기록 JSON 내려받기</button></div>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:1rem">
+    <div class="section-head"><div><p class="eyebrow">규칙</p><h3>체결 규칙 (교육용 단일가 경매)</h3></div></div>
+    <ol class="small">
+      <li>제출된 지정가와 직전 가격을 후보가격으로 둔다.</li>
+      <li>후보 p에서 매수 가능 수량 D(p) = 지정가 ≥ p인 매수 주문 수, 매도 가능 수량 S(p) = 지정가 ≤ p인 매도 주문 수.</li>
+      <li>min(D,S) 최대 → |D−S| 최소 → 직전 가격과 가까운 가격 → 더 낮은 가격 순으로 하나를 고른다.</li>
+      <li>최대 체결량이 0이면 무거래이며 직전 가격을 유지한다.</li>
+      <li>매수는 높은 지정가 우선, 매도는 낮은 지정가 우선, 같은 가격은 접수 순서. 잔여 주문은 라운드 종료 시 만료.</li>
+    </ol>
+    <p class="small muted">팀별 초기 현금 1,000 · 주식 10주 · 기준가 100 · 호가단위 1 · 라운드당 팀별 주문 하나(1주). 공매도·음수 현금·자기 거래 불가. 실제 거래소 제도를 완전히 재현하지 않습니다.</p>
+  </section>
+
+  <section class="card highlight" style="margin-top:1rem">
+    <div class="section-head"><div><p class="eyebrow">디브리프 · 10분</p><h3>우리는 무슨 규칙을 따랐는가?</h3></div></div>
+    <p class="small muted">각 팀이 자기 행동을 한두 문장의 규칙으로 적습니다. 예: "뉴스가 좋고 직전가가 우리 기준가(110)보다 낮으면 직전가+2에 매수, 아니면 관망." 이 문장은 다음 페이지(3b)에서 에이전트로 조립됩니다.</p>
+    <div id="rules"></div>
+    <div class="actions"><button class="button" id="save-rules" type="button">규칙 저장</button><span class="small muted" id="rules-status"></span></div>
+    <div class="callout"><p class="eyebrow">토론</p>무엇이 참여자의 행동 때문이고, 무엇이 우리가 정한 거래 규칙 때문인가? 같은 뉴스에 왜 주문이 달랐는가? 현실과 비교하려면 어떤 데이터가 필요한가?</div>
+  </section>
+
+  <nav data-page-nav></nav>
+</main>
+<script type="module" src="assets/js/pages/market.js"></script>
+</body>
+</html>

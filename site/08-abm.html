@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3b · 규칙이 시장이 된다 · 가짜 주식시장</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="abm">
+<main class="shell">
+  <div data-page-head data-weapon="생성자 역할 · 코드 없이 규칙 조립"></div>
+  <div class="callout question"><p class="eyebrow">시작 질문</p><strong>여러분이 4라운드 만에 만든 규칙에서, 두꺼운 꼬리와 변동성 군집이 저절로 나올까?</strong><p class="small muted">GBM·GARCH는 "결과(통계치)"를 직접 겨냥한 하향식 모형입니다. 여기서는 개별 참여자의 규칙만 정하고, 통계치는 시장에서 <em>저절로 나오길</em> 기다립니다 — 그래서 이 모형만이 "왜 그런가"를 설명할 수 있습니다.</p></div>
+
+  <section class="card soft">
+    <p class="eyebrow">3a에서 적은 우리 팀 규칙</p>
+    <div id="team-rules" class="small"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><p class="eyebrow">1 · 에이전트 조립</p><h2>참여자 유형과 규칙</h2></div><p class="small muted">각 유형은 IF … THEN … 절의 목록입니다. 위에서부터 첫 번째로 맞는 절이 실행되고, 맞는 절이 없으면 관망합니다. 주문은 항상 1주, 지정가는 직전가 ± 오프셋(%).</p></div>
+    <div class="grid two" id="agent-cards"></div>
+  </section>
+
+  <section class="section grid two">
+    <div class="card">
+      <p class="eyebrow">2 · 실행</p>
+      <div class="controls">
+        <div class="field"><label>라운드 수 <span class="value" id="rounds-out"></span></label><input type="range" id="rounds" min="100" max="600" step="50" value="250"></div>
+        <div class="field"><label>뉴스가 나올 확률 <span class="value" id="news-out"></span></label><input type="range" id="newsProb" min="0" max="1" step="0.05" value="0.4"></div>
+        <div class="field"><label>시드 <span class="value" id="seed-out"></span></label><input type="range" id="seed" min="1" max="99" value="1"></div>
+      </div>
+      <div class="actions"><button class="button primary" id="run" type="button">시장 실행</button></div>
+      <div id="run-status" class="status hidden"></div>
+      <div class="table-wrap"><table id="checks"></table></div>
+      <div class="table-wrap" style="margin-top:.6rem"><table id="compare"></table></div>
+      <p class="small muted">비교 대상은 추정 구간 실제 SK하이닉스 일별 수익률. 라운드 ≠ 거래일이므로 변동성 크기가 아니라 <strong>모양</strong>(첨도·ACF)을 봅니다.</p>
+    </div>
+    <div class="card">
+      <div class="chart" id="price"></div><p class="chart-caption">체결 가격 (로그축) · 점선: 기준가치(뉴스에 따라 움직임)</p>
+      <div class="chart" id="returns"></div><p class="chart-caption">라운드별 로그수익률 — 변동이 몰리는 구간이 있는가?</p>
+      <div class="table-wrap"><table id="types-table"></table></div>
+    </div>
+  </section>
+
+  <section class="card highlight">
+    <div class="section-head"><div><p class="eyebrow">3 · 가정 하나만 바꾸기</p><h3>추세추종 비율 실험</h3></div><button class="button" id="sweep" type="button">추세추종 0 / 5 / 15 / 30명으로 4번 실행</button></div>
+    <div class="callout question"><p class="eyebrow">실행 전 예상</p>추세추종 에이전트를 늘리면 첨도와 ACF는 어느 쪽으로 움직일까? 가격은?</div>
+    <div class="table-wrap"><table id="sweep-table"></table></div>
+    <div class="callout"><p class="eyebrow">정리 한 줄</p>개별 규칙 어디에도 "급락"이나 "변동성 군집"은 적혀 있지 않습니다. 그것은 규칙들의 <strong>상호작용에서 창발</strong>합니다. 그리고 이 모형은 "추세추종이 많아서"라고 <em>이유</em>를 말할 수 있습니다 — GARCH는 그 말을 못 합니다.</div>
+  </section>
+
+  <section class="card" style="margin-top:1rem">
+    <p class="eyebrow">4 · 생성자 점수 제출</p>
+    <div class="grid three"><div class="stat"><span class="number" id="pass-count">—</span><span class="label">통과한 검사 (5개 중)</span></div></div>
+    <div class="field"><label for="abm-notes">어떤 규칙 조합이 무엇을 만들었나 · 만들지 못한 특징은 무엇인가</label><textarea id="abm-notes"></textarea></div>
+    <div class="actions"><button class="button primary" id="submit" type="button">구성 저장 + 생성 점수 제출</button></div>
+    <div id="submit-status" class="status hidden"></div>
+  </section>
+
+  <nav data-page-nav></nav>
+</main>
+<script type="module" src="assets/js/pages/abm.js"></script>
+</body>
+</html>
