@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1c · R1 눈으로 판별 · 가짜 주식시장</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="round1" data-round="round1">
+<main class="shell">
+  <div data-page-head data-weapon="무기: 차트만"></div>
+  <div class="callout question"><p class="eyebrow">판별자 역할</p><strong>셋 중 하나만 실제 주가입니다. 나머지 둘은 방금 여러분이 만든 종류의 모형(GBM)과, 아직 소개하지 않은 개선 모형이 만든 가짜입니다.</strong><p class="small muted">축·기간·시작가는 셋 다 같습니다. 이유 한 문장은 2교시에서 검사 항목으로 바뀌므로 구체적으로 적으세요. 정답은 지금 공개하지 않습니다.</p></div>
+
+  <div id="round-content">
+    <p class="small muted" id="server-note">서버 상태 확인 중…</p>
+    <div class="grid three" id="cards"></div>
+    <div class="card hidden" id="metrics-wrap" style="margin-top:1rem"><p class="eyebrow">검사표</p><div class="table-wrap"><table id="metrics"></table></div><p class="small muted">모든 값은 같은 표본 길이·같은 로그수익률 정의로 계산했습니다. ±3σ의 σ는 추정 구간에서 정한 값입니다.</p></div>
+    <section class="card highlight" style="margin-top:1rem">
+      <h3>우리 팀의 판정</h3>
+      <div class="choice-row" id="choices"></div>
+      <div class="field" style="margin-top:.8rem"><label for="reason">이유 한 문장 — "___ 때문에 이것이 진짜다"</label><textarea id="reason" placeholder="예: 큰 하락이 있고 그 뒤로 며칠 동안 변동이 몰려 있다"></textarea></div>
+      <div class="field"><label>확신도 <span class="value" id="confidence-out"></span></label><input type="range" id="confidence" min="34" max="100" value="60"><p class="small muted">세 개 중 하나이므로 34% 미만은 의미가 없습니다. 브라이어 점수: 맞으면 1−(1−p)², 틀리면 1−p². 50%면 항상 0.75.</p></div>
+      <div class="actions"><button class="button primary" id="submit" type="button">제출</button><button class="button small" id="local-reveal" type="button" title="강사용 오프라인 기능">오프라인 공개</button></div>
+      <div id="vote-status" class="status hidden"></div>
+    </section>
+    <div id="reveal" class="card hidden" style="margin-top:1rem"></div>
+
+  </div>
+  <nav data-page-nav></nav>
+</main>
+<script type="module" src="assets/js/pages/round.js"></script>
+</body>
+</html>

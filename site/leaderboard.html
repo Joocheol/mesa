@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>리더보드 · 가짜 주식시장</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="leaderboard">
+<main class="shell">
+  <div class="page-head"><div><p class="eyebrow">인간 GAN 토너먼트</p><h1>리더보드</h1><p class="lead muted">판별 점수(브라이어, 공개된 라운드만) + 생성 점수(수리 모형의 검사 통과 수). 3초마다 갱신.</p></div><div class="meta"><span class="pill" id="lb-state">불러오는 중…</span><label class="pill" style="margin:0">수업 코드 <input type="text" id="class-code" style="width:90px;display:inline-block;margin-left:.4rem"></label></div></div>
+  <div class="grid three" id="round-states"></div>
+  <div class="card" style="margin-top:1rem"><div class="table-wrap"><table id="board"></table></div><p class="small muted">브라이어: 맞으면 1−(1−p)², 틀리면 1−p² (p=확신도). 판별 합계는 공개된 라운드의 합. 생성 점수는 2b·3b에서 제출한 값. 총점 = 판별 합계 + 생성 점수 ÷ 5.</p></div>
+  <section class="grid two" style="margin-top:1rem">
+    <div class="card"><p class="eyebrow">학급 보정 곡선</p><div class="chart" id="calibration"></div><p class="chart-caption">공개된 모든 라운드 · 가로 확신도, 세로 정답률 · 대각선이 완벽한 보정</p></div>
+    <div class="card"><p class="eyebrow">라운드별 정답률과 평균 확신도</p><div class="table-wrap"><table id="rounds-table"></table></div><p class="small muted">무기가 눈 → 숫자 → 봉인 구간으로 바뀌면서 정답률과 확신도의 간격이 좁아지는지가 오늘의 관전 포인트입니다.</p></div>
+  </section>
+  <p class="page-nav"><a class="button" href="index.html">← 개요</a><a class="button" href="11-final.html">5교시 설명서 →</a></p>
+</main>
+<script type="module" src="assets/js/pages/leaderboard.js"></script>
+</body>
+</html>
