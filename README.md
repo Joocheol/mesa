@@ -2,6 +2,8 @@
 
 은행 퀀트·리스크 실무자를 위한 **3시간+2시간 권장 참여형 시뮬레이션 워크숍**. 한 번에 5시간으로 압축할 수도 있지만, 토론과 기기 설정 시간을 확보하려면 이틀 운영을 권장한다. 참가자는 코드를 쓰지 않고 조당 노트북 한 대의 브라우저로 실습한다. 하루 종일 한 가지 질문이 반복된다 — **진짜처럼 보이는가, 아니면 검사를 견디는가?**
 
+시뮬레이션을 처음 접하는 참가자는 첫 활동 전에 [`site/guide.html`](site/guide.html)의 10분 개념 가이드를 읽는다. 모형·모수·시드·경로·분포·검증 구간·검사표·ABM을 비전공자 언어로 설명하며, 모든 활동 상단에서 관련 항목으로 다시 이동할 수 있다.
+
 ```bash
 node scripts/dev_server.mjs 8787      # http://127.0.0.1:8787 · 강사 비밀번호 mesa
 ```
@@ -39,6 +41,7 @@ node scripts/dev_server.mjs 8787      # http://127.0.0.1:8787 · 강사 비밀�
 
 ```
 site/                 정적 사이트 (외부 CDN 없음, ES 모듈)
+  guide.html          초심자를 위한 10분 개념 가이드
   assets/js/          rng · stats · models(GBM/t/GARCH-t/bootstrap) · auction · abm · life · chart · rounds · classroom
   assets/js/pages/    페이지별 스크립트
   assets/data/        KOSPI 200(활성)·SK하이닉스 스냅샷 + 메타데이터, dataset.json, 강사 작성 LLM 가상 예시

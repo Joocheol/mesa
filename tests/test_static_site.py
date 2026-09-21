@@ -89,6 +89,27 @@ class StaticSiteTests(unittest.TestCase):
             self.assertIn("data-page-head", body, f"{f} lacks activity head")
             self.assertIn("data-page-nav", body, f"{f} lacks nav")
 
+    def test_beginner_guide_and_activity_notes_cover_course(self):
+        guide = SITE / "guide.html"
+        self.assertTrue(guide.exists())
+        ids = set(parse(guide).ids)
+        required = {
+            "simulation", "randomness", "monte-carlo", "probability",
+            "distribution", "returns", "validation", "diagnostics",
+            "models", "market", "abm", "llm", "reading-results", "mistakes",
+        }
+        self.assertTrue(required.issubset(ids), f"guide missing anchors: {sorted(required - ids)}")
+
+        pages_js = (SITE / "assets/js/pages.js").read_text(encoding="utf-8")
+        pages_block = pages_js.split("export const PAGES =", 1)[1].split("export const SCHEDULE =", 1)[0]
+        activity_ids = set(re.findall(r'\{ id:\s*"([^"]+)"', pages_block))
+        notes_block = pages_js.split("export const BEGINNER_NOTES =", 1)[1]
+        note_ids = set(re.findall(r"^  ([a-z0-9]+): \{", notes_block, re.MULTILINE))
+        self.assertEqual(activity_ids, note_ids, "every activity needs a beginner note")
+
+        ui = (SITE / "assets/js/ui.js").read_text(encoding="utf-8")
+        self.assertIn('href="guide.html#${anchor}"', ui)
+
     def test_csv_hash_matches_metadata_and_is_chronological(self):
         dataset = json.loads((SITE / "assets/data/dataset.json").read_text(encoding="utf-8"))
         csv = SITE / "assets/data" / dataset["csv"]
