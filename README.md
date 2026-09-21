@@ -16,7 +16,7 @@ node scripts/dev_server.mjs 8787      # http://127.0.0.1:8787 · 강사 비밀�
 | R2 (2교시 끝) | 검사표 숫자만 | 검증 구간 전체 |
 | R3 (4교시) | 차트 + 검사표 | **봉인된 최종 20%** — 강사가 열기 전엔 보이지 않음 |
 
-판별은 확신도(0~100)와 함께 제출하고 **브라이어 점수**(맞으면 1−(1−p)², 틀리면 1−p²)로 채점한다. PD 모형 보정과 같은 원리이며, 하루가 끝나면 학급 보정 곡선이 리더보드에 남는다. 생성 점수는 2b(수리 모형)와 3b(에이전트 시장)의 검사 통과 수다.
+판별은 확신도(0~100)와 함께 제출하고 **브라이어 점수**(맞으면 1−(1−p)², 틀리면 1−p²)로 채점한다. PD 모형 보정과 같은 원리이며, 하루가 끝나면 학급 보정 곡선이 리더보드에 남는다. 생성 점수는 2b(수리 모형)의 검사 통과 수다. 3교시의 Game of Life와 에이전트 시장은 채점하지 않는 '전망' 활동이다 — ABM은 "왜"를 말할 수 있는 유일한 모형이지만 검증이 가장 어려워 더 연구되어야 할 분야라는 것이 결론이다.
 
 ## 시간표 (300분, 휴식 20분 포함)
 
@@ -27,9 +27,9 @@ node scripts/dev_server.mjs 8787      # http://127.0.0.1:8787 · 강사 비밀�
 | 01:15 | 휴식 (10) | |
 | 01:25 | 2 · 검사기를 만들고 모형을 고친다 (60): 공개·보정 → 검사표·순서 섞기 → 수리 작업실 → **R2** | `04-tests` `05-repair` `06-round2` |
 | 02:25 | 휴식 (10) | |
-| 02:35 | 3 · 사람이 시장이 된다 → 규칙이 시장이 된다 (60) | `07-market` `08-abm` |
-| 03:35 | 4 · 규칙 대신 LLM을 앉히면? → **R3** 봉인 구간 최종전 (45) | `09-llm` `10-round3` |
-| 04:20 | 5 · 설명서와 되돌아보기 (40) | `11-final` `leaderboard` |
+| 02:35 | 3 · 사람이 시장이 된다 (25) → Game of Life 창발 맛보기 (10) → 규칙이 시장이 된다 · ABM이라는 분야 (25) | `07-market` `08-life` `09-abm` |
+| 03:35 | 4 · 규칙 대신 LLM을 앉히면? (ABM의 최전선) → **R3** 봉인 구간 최종전 (45) | `10-llm` `11-round3` |
+| 04:20 | 5 · 설명서와 되돌아보기 (40) | `12-final` `leaderboard` |
 
 이틀(3h+2h)로 나눌 때는 1일차 = 0~2교시 + 설명서 v1, 2일차 = 리캡 + 3~5교시. 자세한 진행안은 [`docs/workshop/instructor-guide.md`](docs/workshop/instructor-guide.md).
 
@@ -37,7 +37,7 @@ node scripts/dev_server.mjs 8787      # http://127.0.0.1:8787 · 강사 비밀�
 
 ```
 site/                 정적 사이트 (외부 CDN 없음, ES 모듈)
-  assets/js/          rng · stats · models(GBM/t/GARCH-t/bootstrap) · auction · abm · chart · rounds · classroom
+  assets/js/          rng · stats · models(GBM/t/GARCH-t/bootstrap) · auction · abm · life · chart · rounds · classroom
   assets/js/pages/    페이지별 스크립트
   assets/data/        KOSPI 200(활성)·SK하이닉스 스냅샷 + 메타데이터, dataset.json, LLM 사전 생성 응답
 worker/index.js       팀 투표·점수·라운드 상태 API (Workers 스타일 fetch, D1)

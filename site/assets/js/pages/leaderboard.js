@@ -18,7 +18,7 @@ function compute(lb) {
     const correct = v.choice === a.correctChoice;
     get(v.team_name).rounds[v.activity_id] = { correct, choice: v.choice, confidence: v.confidence, score: brier(v.confidence, correct) };
   }
-  for (const s of lb.scores) get(s.team_name).gen[s.activity_id] = { value: Number(s.value), detail: s.detail };
+  for (const s of lb.scores) if (s.activity_id === "repair") get(s.team_name).gen[s.activity_id] = { value: Number(s.value), detail: s.detail };
   const rows = [...teams.values()].map((t) => {
     const detect = Object.values(t.rounds).reduce((a, r) => a + r.score, 0);
     const genTotal = Object.values(t.gen).reduce((a, g) => a + g.value, 0);
@@ -35,7 +35,7 @@ async function refresh() {
   $("#round-states").innerHTML = Object.entries(ROUNDS).map(([id, r]) => { const a = lb.activities[id]; return `<div class="card soft"><p class="eyebrow">${r.label}</p><p class="small">${r.weapon}</p><p><strong>${lb.submissionCounts?.[id] || 0}팀 제출</strong> · ${a.open ? "접수 중" : "마감"} · ${a.revealed ? `공개됨 (정답 ${a.correctChoice})` : "비공개"}</p></div>`; }).join("");
   const rows = compute(lb);
   const me = team().teamName;
-  $("#board").innerHTML = `<tr><th>#</th><th>팀</th>${Object.keys(ROUNDS).map((id) => `<th class="num">${id.replace("round", "R")}</th>`).join("")}<th class="num">판별 합계</th><th class="num">생성 (수리)</th><th class="num">생성 (ABM)</th><th class="num">총점</th></tr>${rows.length ? rows.map((t, i) => `<tr${t.name === me ? ' class="better"' : ""}><td>${i + 1}</td><td>${escapeHtml(t.name)}</td>${Object.keys(ROUNDS).map((id) => { const r = t.rounds[id]; return `<td class="num">${r ? `${fmt(r.score, 2)} <span class="muted small">${r.choice || ""}${r.correct ? "○" : "×"} ${r.confidence}%</span>` : "—"}</td>`; }).join("")}<td class="num">${fmt(t.detect, 2)}</td><td class="num">${t.gen.repair ? `${t.gen.repair.value}/5` : "—"}</td><td class="num">${t.gen.abm ? `${t.gen.abm.value}/5` : "—"}</td><td class="num"><strong>${fmt(t.total, 2)}</strong></td></tr>`).join("") : `<tr><td colspan="9" class="muted">아직 공개된 라운드나 제출된 점수가 없습니다.</td></tr>`}`;
+  $("#board").innerHTML = `<tr><th>#</th><th>팀</th>${Object.keys(ROUNDS).map((id) => `<th class="num">${id.replace("round", "R")}</th>`).join("")}<th class="num">판별 합계</th><th class="num">생성 (수리)</th><th class="num">총점</th></tr>${rows.length ? rows.map((t, i) => `<tr${t.name === me ? ' class="better"' : ""}><td>${i + 1}</td><td>${escapeHtml(t.name)}</td>${Object.keys(ROUNDS).map((id) => { const r = t.rounds[id]; return `<td class="num">${r ? `${fmt(r.score, 2)} <span class="muted small">${r.choice || ""}${r.correct ? "○" : "×"} ${r.confidence}%</span>` : "—"}</td>`; }).join("")}<td class="num">${fmt(t.detect, 2)}</td><td class="num">${t.gen.repair ? `${t.gen.repair.value}/5` : "—"}</td><td class="num"><strong>${fmt(t.total, 2)}</strong></td></tr>`).join("") : `<tr><td colspan="8" class="muted">아직 공개된 라운드나 제출된 점수가 없습니다.</td></tr>`}`;
   // calibration across revealed rounds
   const votes = lb.votes.filter((v) => lb.activities[v.activity_id]?.revealed).map((v) => ({ conf: v.confidence, correct: v.choice === lb.activities[v.activity_id].correctChoice ? 1 : 0, id: v.activity_id }));
   const bins = [[34, 50], [50, 65], [65, 80], [80, 90], [90, 101]];

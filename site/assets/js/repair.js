@@ -1,5 +1,5 @@
 // Runs the team's repaired model (t / GARCH-t / bootstrap / GBM baseline) over a window
-// and compares its diagnostics to the real window. Shared by 05-repair and 10-round3.
+// and compares its diagnostics to the real window. Shared by 05-repair and 11-round3.
 import { gbmReturns, tReturns, garchReturns, bootstrapReturns } from "./models.js";
 import { diagnostics, quantile, METRIC_KEYS, METRIC_LABELS, fmt, pct } from "./stats.js";
 

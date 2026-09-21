@@ -1,7 +1,6 @@
 import { initChrome, $, $$, status, escapeHtml, bindRange } from "../ui.js";
 import { loadState, saveState, markComplete } from "../state.js";
 import { loadMarket } from "../data.js";
-import { submitScore } from "../classroom.js";
 import { lineChart, COLORS } from "../chart.js";
 import { diagnostics, fmt, pct } from "../stats.js";
 import { CONDITIONS, ACTIONS, TEMPLATES, runMarket, abmChecks } from "../abm.js";
@@ -65,8 +64,7 @@ function render(result) {
   const d = result.diagnostics;
   $("#compare").innerHTML = `<tr><th>모양 지표</th><th class="num">에이전트 시장</th><th class="num">실제 (추정 구간)</th></tr><tr><td>초과첨도</td><td class="num">${d ? fmt(d.kurtosis, 2) : "—"}</td><td class="num">${fmt(real.kurtosis, 2)}</td></tr><tr><td>±3σ 초과 빈도</td><td class="num">${d ? pct(d.exceed3, 2) : "—"}</td><td class="num">${pct(real.exceed3, 2)}</td></tr><tr><td>제곱수익률 ACF(1)</td><td class="num">${d ? fmt(d.acf1, 3) : "—"}</td><td class="num">${fmt(real.acf1, 3)}</td></tr><tr><td>제곱수익률 ACF(5)</td><td class="num">${d ? fmt(d.acf5, 3) : "—"}</td><td class="num">${fmt(real.acf5, 3)}</td></tr><tr><td>라운드당 변동성</td><td class="num">${d ? pct(d.annVol / Math.sqrt(252), 2) : "—"}</td><td class="num">${pct(real.annVol / Math.sqrt(252), 2)} <span class="muted small">/일</span></td></tr>`;
   $("#types-table").innerHTML = `<tr><th>유형</th><th class="num">인원</th><th class="num">매수</th><th class="num">매도</th><th class="num">관망</th><th class="num">평균 수익률</th></tr>${config.types.map((t) => { const a = result.actionsByType[t.type] || { buy: 0, sell: 0, hold: 0 }; return `<tr><td><span style="color:${TEMPLATES[t.type].color}">●</span> ${TEMPLATES[t.type].name}</td><td class="num">${t.count}</td><td class="num">${a.buy}</td><td class="num">${a.sell}</td><td class="num">${a.hold}</td><td class="num">${pct(result.wealthByType[t.type] || 0, 1)}</td></tr>`; }).join("")}`;
-  $("#pass-count").textContent = passCount;
-  status("run-status", `${result.prices.length - 1}라운드 실행 · 마지막 가격 ${result.prices[result.prices.length - 1]} · 통과 ${passCount}/5`, "ok");
+  status("run-status", `${result.prices.length - 1}라운드 실행 · 마지막 가격 ${result.prices[result.prices.length - 1]} · 관찰 항목 ${passCount}/5 해당`, "ok");
   saveState({ abmRun: { passCount, at: new Date().toISOString() } });
   markComplete("abm");
   return passCount;
@@ -86,14 +84,7 @@ $("#sweep").addEventListener("click", () => {
 });
 
 $("#abm-notes").value = state.abmNotes || "";
-$("#submit").addEventListener("click", async () => {
-  if (!lastResult) return status("submit-status", "먼저 시장을 실행하세요.", "error");
-  const passCount = abmChecks(lastResult).filter((c) => c.pass).length;
-  saveState({ abmNotes: $("#abm-notes").value, abmConfig: config, abmScore: passCount });
-  const detail = `ABM ${config.types.map((t) => `${TEMPLATES[t.type].name} ${t.count}`).join(", ")} · 통과 ${passCount}/5`;
-  try { await submitScore("abm", passCount, detail); status("submit-status", `제출했습니다: ${detail}`, "ok"); }
-  catch (error) { status("submit-status", `서버 제출 실패 (${error.message}). 구성은 이 브라우저에 저장했습니다.`, "warning"); }
-});
+$("#save").addEventListener("click", () => { saveState({ abmNotes: $("#abm-notes").value, abmConfig: config }); $("#save-status").textContent = "저장했습니다."; markComplete("abm"); });
 
 renderCards();
 const first = run(); if (first) render(first);
