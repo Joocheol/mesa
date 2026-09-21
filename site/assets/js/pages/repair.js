@@ -67,7 +67,7 @@ function run() {
   lineChart($("#returns"), [{ values: lastResult.sims[0], color: COLORS[1], width: 1 }], { yLabel: "로그수익률" });
   $("#pass-count").textContent = lastResult.passCount; $("#gbm-pass").textContent = gbmBaseline.passCount; $("#hits").textContent = hits;
   saveState({ repairPredict: pred, repairRun: { model: cfg.model, passCount: lastResult.passCount, gbmPass: gbmBaseline.passCount, hits, seed } });
-  status("run-status", `실행 완료 — ${lastResult.label}: 통과 ${lastResult.passCount}/5 (GBM ${gbmBaseline.passCount}/5), 예측 적중 ${hits}/5`, "ok");
+  status("run-status", `실행 완료 — ${lastResult.label}: 범위 안 ${lastResult.passCount}/5 (GBM ${gbmBaseline.passCount}/5), 예측 적중 ${hits}/5`, "ok");
   markComplete("repair");
 }
 $("#run").addEventListener("click", run);
@@ -79,7 +79,7 @@ $("#submit").addEventListener("click", async () => {
   if (!$("#worse").value.trim()) return status("submit-status", "나빠졌거나 그대로인 지표를 적어야 제출할 수 있습니다 — 한계도 결과입니다.", "error");
   const cfg = config();
   saveState({ repair: cfg, repairWorse: $("#worse").value, repairAssumption: $("#assumption").value, repairScore: lastResult.passCount });
-  const detail = `${lastResult.label} · 통과 ${lastResult.passCount}/5 · GBM ${gbmBaseline.passCount}/5`;
+  const detail = `${lastResult.label} · 범위 안 ${lastResult.passCount}/5 · GBM ${gbmBaseline.passCount}/5`;
   try { await submitScore("repair", lastResult.passCount, detail); status("submit-status", `저장·제출했습니다: ${detail}`, "ok"); }
   catch (error) { status("submit-status", `서버 제출 실패 (${error.message}). 모형은 이 브라우저에 저장했습니다.`, "warning"); }
   markComplete("repair");

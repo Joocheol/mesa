@@ -1,6 +1,6 @@
 # 가짜 주식시장 만들기 — 속이는 팀과 잡아내는 팀
 
-은행 퀀트·리스크 실무자를 위한 **5시간 참여형 시뮬레이션 워크숍**. 참가자는 코드를 쓰지 않고, 조당 노트북 한 대의 브라우저로 모든 실습을 진행한다. 손으로 쓴 동전 던지기에서 시작해 주가 모형을 만들고, 검사기를 만들고, 직접 시장이 되어 보고, 그 규칙을 에이전트에게 넘기고, 마지막에 LLM을 앉혀 본다. 하루 종일 한 가지 질문이 반복된다 — **진짜처럼 보이는가, 아니면 검사를 견디는가?**
+은행 퀀트·리스크 실무자를 위한 **3시간+2시간 권장 참여형 시뮬레이션 워크숍**. 한 번에 5시간으로 압축할 수도 있지만, 토론과 기기 설정 시간을 확보하려면 이틀 운영을 권장한다. 참가자는 코드를 쓰지 않고 조당 노트북 한 대의 브라우저로 실습한다. 하루 종일 한 가지 질문이 반복된다 — **진짜처럼 보이는가, 아니면 검사를 견디는가?**
 
 ```bash
 node scripts/dev_server.mjs 8787      # http://127.0.0.1:8787 · 강사 비밀번호 mesa
@@ -14,11 +14,13 @@ node scripts/dev_server.mjs 8787      # http://127.0.0.1:8787 · 강사 비밀�
 |---|---|---|
 | R1 (1교시 끝) | 차트만 | 추정 구간 마지막 150일 |
 | R2 (2교시 끝) | 검사표 숫자만 | 검증 구간 전체 |
-| R3 (4교시) | 차트 + 검사표 | **봉인된 최종 20%** — 강사가 열기 전엔 보이지 않음 |
+| R3 (4교시) | 차트 + 검사표 | 수업 중 처음 공개하는 최종 20% |
 
-판별은 확신도(0~100)와 함께 제출하고 **브라이어 점수**(맞으면 1−(1−p)², 틀리면 1−p²)로 채점한다. PD 모형 보정과 같은 원리이며, 하루가 끝나면 학급 보정 곡선이 리더보드에 남는다. 생성 점수는 2b(수리 모형)의 검사 통과 수다. 3교시의 Game of Life와 에이전트 시장은 채점하지 않는 '전망' 활동이다 — ABM은 "왜"를 말할 수 있는 유일한 모형이지만 검증이 가장 어려워 더 연구되어야 할 분야라는 것이 결론이다.
+판별은 선택한 답의 확률 p와 함께 제출한다. 나머지 확률은 두 후보에 균등 배분해 **3범주 Brier loss**를 계산하고, 리더보드에는 읽기 쉬운 보상 `1−loss/2`를 표시한다. 세 라운드는 보정의 원리를 체험하기 위한 공동 문항이지 팀의 보정도를 추정할 표본은 아니다. 2b의 5개 지표 범위 포함 수는 별도 진단이며 순위 점수에 합산하지 않는다. ABM은 참여자 수준의 메커니즘 가설을 표현할 수 있지만 인과를 자동으로 증명하지 않는다.
 
-## 시간표 (300분, 휴식 20분 포함)
+## 압축 시간표 (300분, 휴식 20분 포함)
+
+아래는 숙련된 강사와 사전 입장 확인을 전제로 한 압축안이다. 첫 운영은 3시간+2시간으로 나누고 Game of Life 문헌·LLM 외부 실행 중 하나를 선택 활동으로 두는 편이 안전하다.
 
 | 시각 | 교시 | 페이지 |
 |---|---|---|
@@ -28,7 +30,7 @@ node scripts/dev_server.mjs 8787      # http://127.0.0.1:8787 · 강사 비밀�
 | 01:25 | 2 · 검사기를 만들고 모형을 고친다 (60): 공개·보정 → 검사표·순서 섞기 → 수리 작업실 → **R2** | `04-tests` `05-repair` `06-round2` |
 | 02:25 | 휴식 (10) | |
 | 02:35 | 3 · 사람이 시장이 된다 (25) → Game of Life 창발 맛보기 (10) → 규칙이 시장이 된다 · ABM이라는 분야 (25) | `07-market` `08-life` `09-abm` |
-| 03:35 | 4 · 규칙 대신 LLM을 앉히면? (ABM의 최전선) → **R3** 봉인 구간 최종전 (45) | `10-llm` `11-round3` |
+| 03:35 | 4 · 규칙 대신 LLM을 앉히면? (연구 가설 설계) → **R3** 처음 보는 구간 최종전 (45) | `10-llm` `11-round3` |
 | 04:20 | 5 · 설명서와 되돌아보기 (40) | `12-final` `leaderboard` |
 
 이틀(3h+2h)로 나눌 때는 1일차 = 0~2교시 + 설명서 v1, 2일차 = 리캡 + 3~5교시. 자세한 진행안은 [`docs/workshop/instructor-guide.md`](docs/workshop/instructor-guide.md).
@@ -39,7 +41,7 @@ node scripts/dev_server.mjs 8787      # http://127.0.0.1:8787 · 강사 비밀�
 site/                 정적 사이트 (외부 CDN 없음, ES 모듈)
   assets/js/          rng · stats · models(GBM/t/GARCH-t/bootstrap) · auction · abm · life · chart · rounds · classroom
   assets/js/pages/    페이지별 스크립트
-  assets/data/        KOSPI 200(활성)·SK하이닉스 스냅샷 + 메타데이터, dataset.json, LLM 사전 생성 응답
+  assets/data/        KOSPI 200(활성)·SK하이닉스 스냅샷 + 메타데이터, dataset.json, 강사 작성 LLM 가상 예시
 worker/index.js       팀 투표·점수·라운드 상태 API (Workers 스타일 fetch, D1)
 drizzle/              D1 스키마
 scripts/              dev_server.mjs (node:sqlite로 D1 흉내), build_sites_worker.py (배포 번들)
@@ -51,7 +53,7 @@ docs/workshop/        강사 진행안 · 활동지 · 역할 카드 · 경매 �
 
 ## 데이터
 
-기본 스냅샷은 **KOSPI 200 지수**(`^KS200`, Yahoo Finance) 마지막 1,500거래일(2018‑11‑23 ~ 2024‑12‑30)이다: `site/assets/data/kospi200-daily.csv`. 추정 구간에 2020년 급락, 봉인 구간에 2024년 8월 급락이 들어 있어 두꺼운 꼬리·변동성 군집이 실제 데이터에서 드러난다. 시간순 60/20/20으로 나누어 추정 구간에서만 모수를 정하고, 최종 20%는 R3까지 봉인한다. SK하이닉스(000660) 스냅샷도 함께 들어 있다.
+기본 스냅샷은 **KOSPI 200 지수**(`^KS200`, Yahoo Finance) 1,500거래일(2018‑11‑23 ~ 2024‑12‑30)이다: `site/assets/data/kospi200-daily.csv`. 시간순 60/20/20으로 나누어 추정 구간에서만 모수를 정한다. 최종 20%는 수업 진행상 R3까지 UI에서 숨기지만 공개 저장소의 공개 데이터이므로 보안 시험용 비밀 구간은 아니다. 고부담 평가에는 별도의 비공개 데이터를 서버에서 제공해야 한다.
 
 활성 데이터는 `site/assets/data/dataset.json`이 가리킨다. Yahoo Finance에서 새로 내려받은 CSV(`Date, …, Close, Adj Close`)로 갱신하려면:
 
@@ -71,7 +73,7 @@ node scripts/dev_server.mjs 8787           # 로컬 수업 서버 (in-memory D1)
 python3 scripts/build_sites_worker.py      # dist/server/index.js + dist/.openai/{hosting.json,drizzle/}
 ```
 
-`main`에 푸시하면 GitHub Actions가 테스트를 돌린 뒤 `site/`를 **GitHub Pages**에 배포한다(정적 · 투표 서버 없음 → 각 라운드의 "오프라인 공개" 버튼 사용). 실시간 팀 투표·리더보드까지 쓰려면 `dist/`를 Sites + D1에 배포하고 환경 비밀값 `INSTRUCTOR_PASSWORD_HASH`(sha256 hex)와 `SESSION_SIGNING_SECRET`을 설정한다. 저장소에는 비밀값이 없다. 강사 콘솔은 수업 진행 도구이며 보안 수준의 비밀 유지를 주장하지 않는다. 자세한 절차는 [`docs/workshop/deployment.md`](docs/workshop/deployment.md).
+`main`에 푸시하면 GitHub Actions가 테스트를 돌린 뒤 `site/`를 **GitHub Pages**에 배포한다. 실시간 팀 투표를 쓰려면 `dist/`를 Sites + D1에 배포하고 환경 비밀값을 설정한다. 오프라인 공개 버튼은 API 연결이 실패한 경우에만 나타난다. 클래스 코드·클라이언트 계산 점수·UI 잠금은 인증이나 고부담 평가 통제가 아니다. 자세한 절차는 [`docs/workshop/deployment.md`](docs/workshop/deployment.md).
 
 ## Mesa 입문 예제
 

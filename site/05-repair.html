@@ -8,7 +8,7 @@
 </head>
 <body data-page="repair">
 <main class="shell">
-  <div data-page-head data-weapon="생성자 역할 · 생성 점수 산출"></div>
+  <div data-page-head data-weapon="생성자 역할 · 예측 범위 진단"></div>
   <div class="callout question"><p class="eyebrow">시작 질문</p><strong>가정 하나만 바꾼다면 무엇을 바꾸겠는가?</strong> 셋 중 하나를 고르고, 실행 전에 "어느 지표가 좋아지고 어느 지표는 그대로일지"를 먼저 표에 적으세요. 모든 지표를 한꺼번에 고치는 수리는 없습니다.</div>
 
   <section class="grid two">
@@ -43,15 +43,15 @@
   </section>
 
   <section class="card" style="margin-top:1rem">
-    <p class="eyebrow">4 · 생성자 점수 제출</p>
+    <p class="eyebrow">4 · 생성 모형 진단 기록</p>
     <div class="grid three">
-      <div class="stat"><span class="number" id="pass-count">—</span><span class="label">검증 구간 실제값이 5~95% 범위 안에 든 지표 수 (5개 중)</span></div>
-      <div class="stat"><span class="number" id="gbm-pass">—</span><span class="label">GBM 기준선의 통과 수</span></div>
+      <div class="stat"><span class="number" id="pass-count">—</span><span class="label">검증 구간 실제값이 5~95% 범위 안에 든 지표 수 (5개 중·정식 검정 아님)</span></div>
+      <div class="stat"><span class="number" id="gbm-pass">—</span><span class="label">GBM 기준선의 범위 포함 수</span></div>
       <div class="stat"><span class="number" id="hits">—</span><span class="label">예측표 적중 (5개 중)</span></div>
     </div>
     <div class="field" style="margin-top:.8rem"><label for="worse">반드시 적기 — 나빠졌거나 그대로인 지표와 그 이유</label><textarea id="worse"></textarea></div>
     <div class="field"><label for="assumption">새로 들어온 가정 (예: 자유도 4.5, 블록 길이 10, 변동성이 과거 변동성에 의존)</label><textarea id="assumption"></textarea></div>
-    <div class="actions"><button class="button primary" id="submit" type="button">팀 모형 저장 + 생성 점수 제출</button><span class="small muted">저장한 모형은 R3 봉인 구간에서 모수 그대로 평가됩니다.</span></div>
+    <div class="actions"><button class="button primary" id="submit" type="button">팀 모형과 진단 기록 저장</button><span class="small muted">저장한 모형은 R3에서 모수 그대로 평가됩니다. 범위 포함 개수는 지표 간 상관과 다중비교를 반영하지 않은 교육용 체크리스트이며 순위 점수에 합산하지 않습니다.</span></div>
     <div id="submit-status" class="status hidden"></div>
   </section>
 

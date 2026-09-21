@@ -8,8 +8,15 @@ import { gbmReturns, tReturns, fitGarchT, garchReturns, bootstrapReturns, shuffl
 import { clearAuction, settle, validateOrder } from "../site/assets/js/auction.js";
 import { runMarket, abmChecks, TEMPLATES } from "../site/assets/js/abm.js";
 
-const csv = readFileSync(new URL("../site/assets/data/sk-hynix-000660-daily.csv", import.meta.url), "utf8").trim().split("\n").slice(1);
-const closes = csv.map((l) => Number(l.split(",")[4]));
+const dataset = JSON.parse(readFileSync(new URL("../site/assets/data/dataset.json", import.meta.url), "utf8"));
+const csvLines = readFileSync(new URL(`../site/assets/data/${dataset.csv}`, import.meta.url), "utf8").replace(/^\uFEFF/, "").trim().split(/\r?\n/);
+const csvHeader = csvLines[0].split(",").map((name) => name.trim().toLowerCase());
+const closeIndex = csvHeader.indexOf("adj close") >= 0 ? csvHeader.indexOf("adj close") : csvHeader.indexOf("close");
+assert.ok(closeIndex >= 0, "active dataset needs a Close or Adj Close column");
+const closes = csvLines.slice(1)
+  .map((line) => line.split(",")[closeIndex])
+  .filter((value) => value && value !== "null")
+  .map(Number);
 const returns = logReturns(closes);
 const train = returns.slice(0, Math.floor(returns.length * 0.6));
 
@@ -89,9 +96,10 @@ test("runs analysis separates alternating human sequences from coin flips", () =
   assert.ok(coinLike >= 40, `coin sequences mostly pass (${coinLike}/50)`);
 });
 
-test("Brier scoring is proper at the extremes", () => {
+test("three-category Brier reward is proper at the extremes", () => {
   assert.equal(brier(100, true), 1); assert.equal(brier(100, false), 0);
-  assert.equal(brier(50, true), 0.75); assert.equal(brier(50, false), 0.75);
+  assert.ok(brier(50, true) > brier(50, false));
+  assert.ok(Math.abs(brier(100 / 3, true) - brier(100 / 3, false)) < 1e-12, "uniform probabilities are uninformative");
   assert.ok(brier(80, true) > brier(60, true));
 });
 

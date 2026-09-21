@@ -45,19 +45,21 @@ function renderReveal(correct, counts) {
   const total = counts ? Object.values(counts).reduce((a, b) => a + b, 0) : 0;
   $("#reveal").classList.remove("hidden");
   $("#reveal").innerHTML = `<div class="status ok">정답 공개: <strong>${correct}</strong>가 실제 주가입니다.</div>
-    ${own ? `<div class="grid three" style="margin:.6rem 0"><div class="stat"><span class="number">${saved.choice}</span><span class="label">우리 팀 선택 · ${own.correct ? "정답" : "오답"}</span></div><div class="stat"><span class="number">${saved.confidence}%</span><span class="label">우리 확신도</span></div><div class="stat"><span class="number">${fmt(own.score, 3)}</span><span class="label">브라이어 점수 (${own.correct ? "1−(1−p)²" : "1−p²"})</span></div></div>` : `<p class="muted small">이 브라우저에서는 제출 기록이 없습니다.</p>`}
+    ${own ? `<div class="grid three" style="margin:.6rem 0"><div class="stat"><span class="number">${saved.choice}</span><span class="label">우리 팀 선택 · ${own.correct ? "정답" : "오답"}</span></div><div class="stat"><span class="number">${saved.confidence}%</span><span class="label">선택한 답의 확률</span></div><div class="stat"><span class="number">${fmt(own.score, 3)}</span><span class="label">3범주 Brier 보상 (1−loss/2)</span></div></div>` : `<p class="muted small">이 브라우저에서는 제출 기록이 없습니다.</p>`}
     ${counts ? `<p class="small muted">학급 분포 (${total}팀): ${["A", "B", "C"].map((l) => `${l} ${counts[l] || 0}팀 (${total ? Math.round(((counts[l] || 0) / total) * 100) : 0}%)`).join(" · ")}</p>` : ""}
-    <p class="small">${roundId === "round1" ? "차트 모양만으로는 생성 과정을 확정할 수 없습니다. 다음 페이지에서 '왜 그렇게 골랐는지'를 숫자로 바꿉니다." : roundId === "round2" ? "숫자만 보고 고른 결과입니다. R1과 비교해 팀의 정답률·확신도가 어떻게 달라졌는지 리더보드에서 확인하세요." : "봉인 구간의 실제 변동성은 추정 구간과 크게 다를 수 있습니다. 모형이 '추정 구간의 특징'을 재현했다는 것과 '미래를 예측'한다는 것은 다릅니다."}</p>`;
+    <p class="small">${roundId === "round1" ? "차트 모양만으로는 생성 과정을 확정할 수 없습니다. 다음 페이지에서 '왜 그렇게 골랐는지'를 숫자로 바꿉니다." : roundId === "round2" ? "숫자만 보고 고른 결과입니다. R1과 비교해 팀의 정답률·확신도가 어떻게 달라졌는지 리더보드에서 확인하세요." : "처음 보는 구간의 실제 변동성은 추정 구간과 크게 다를 수 있습니다. 모형이 '추정 구간의 특징'을 재현했다는 것과 '미래를 예측'한다는 것은 다릅니다."}</p>`;
 }
 
 async function refresh() {
   try {
     serverState = await voteState(roundId);
+    $$(".offline-only").forEach((el) => el.classList.add("hidden"));
     $("#server-note").textContent = `서버 연결됨 · ${serverState.submissionCount}팀 제출 · ${serverState.open ? "접수 중" : "마감"} · ${serverState.revealed ? "공개됨" : "정답 비공개"}`;
     $("#submit").disabled = !serverState.open || serverState.revealed;
     if (serverState.revealed) renderReveal(serverState.correctChoice, serverState.counts);
     if (roundId === "round3") unseal(serverState.open || serverState.revealed);
   } catch (error) {
+    $$(".offline-only").forEach((el) => el.classList.remove("hidden"));
     $("#server-note").textContent = `서버에 연결할 수 없습니다 (${error.message}). 답안은 이 브라우저에만 저장됩니다.`;
     $("#submit").disabled = false;
     if (roundId === "round3") unseal(revealedLocally || Boolean(loadState().localUnseal));
@@ -82,9 +84,9 @@ async function renderTeamModelExam() {
   const sealed = data.sealed();
   const result = runTeamModelOnWindow(data, repair, sealed.testReturns, { paths: 200, seed: 77 });
   slot.innerHTML = `<p class="small">우리 팀 모형: <strong>${escapeHtml(result.label)}</strong> · 모수는 2b에서 저장한 값 그대로(고정) · 200경로 × ${sealed.testReturns.length}일</p>
-    <div class="table-wrap"><table><tr><th>검사 항목</th><th class="num">봉인 구간 실제</th><th class="num">우리 모형 중앙값</th><th class="num">5%~95%</th><th>실제가 범위 안?</th></tr>
+    <div class="table-wrap"><table><tr><th>검사 항목</th><th class="num">처음 보는 구간 실제</th><th class="num">우리 모형 중앙값</th><th class="num">5%~95%</th><th>실제가 범위 안?</th></tr>
     ${result.rows.map((r) => `<tr class="${r.pass ? "better" : "worse"}"><td>${r.label}</td><td class="num">${r.fmt(r.real)}</td><td class="num">${r.fmt(r.median)}</td><td class="num">${r.fmt(r.lo)} ~ ${r.fmt(r.hi)}</td><td>${r.pass ? "예" : "아니오"}</td></tr>`).join("")}</table></div>
-    <p class="small muted">통과 ${result.passCount}/${result.rows.length}. 이 표를 본 뒤 모형을 바꾸면 그 결과는 '탐색적 재평가'로 표시해야 합니다 — 봉인 구간은 한 번만 봉인 구간입니다.</p>`;
+    <p class="small muted">범위 안 ${result.passCount}/${result.rows.length}. 이는 정식 적합도 검정이나 독립 점수가 아니라 다섯 진단값의 교육용 포함 여부입니다. 이 표를 본 뒤 모형을 바꾸면 결과는 '탐색적 재평가'로 표시해야 합니다.</p>`;
   saveState({ round3Exam: { passCount: result.passCount, label: result.label, at: new Date().toISOString() } });
 }
 
@@ -116,7 +118,7 @@ async function main() {
     renderReveal(round.answer, null);
   });
   $("#local-unseal")?.addEventListener("click", () => {
-    if (!confirm("서버 없이 봉인을 해제합니다. 강사가 R3를 시작할 때만 누르세요.")) return;
+    if (!confirm("서버 없이 수업 진행 잠금을 해제합니다. 강사가 R3를 시작할 때만 누르세요.")) return;
     saveState({ localUnseal: true });
     unseal(true);
   });

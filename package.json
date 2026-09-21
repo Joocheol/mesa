@@ -2,7 +2,7 @@
   "name": "fake-market-workshop",
   "version": "2.0.0",
   "private": true,
-  "description": "가짜 주식시장 만들기 — 은행 실무자 대상 5시간 브라우저 워크숍 (속이는 팀과 잡아내는 팀)",
+  "description": "가짜 주식시장 만들기 — 은행 실무자 대상 3시간+2시간 브라우저 워크숍 (속이는 팀과 잡아내는 팀)",
   "type": "module",
   "scripts": {
     "dev": "node scripts/dev_server.mjs 8787",

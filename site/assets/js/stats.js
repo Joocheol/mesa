@@ -144,11 +144,17 @@ export function humanVerdict(analysis) {
   return { score, label, notes };
 }
 
-// Brier score for a 3-way choice reported as p = confidence in the chosen option.
-// correct → 1 - (1-p)^2, wrong → 1 - p^2. Max 1, min 0. 50% always yields 0.75.
+// Normalized reward derived from the proper three-category Brier loss.
+// The chosen option receives probability p and the two unchosen options split 1-p equally.
+// Standard Brier loss is lower-is-better and ranges from 0 to 2; the UI reports
+// 1 - loss/2 so that a higher leaderboard reward is easier to read.
 export function brier(confidencePct, correct) {
   const p = Math.min(1, Math.max(0, Number(confidencePct) / 100));
-  return correct ? 1 - (1 - p) ** 2 : 1 - p ** 2;
+  const q = (1 - p) / 2;
+  const loss = correct
+    ? (p - 1) ** 2 + q ** 2 + q ** 2
+    : p ** 2 + (q - 1) ** 2 + q ** 2;
+  return 1 - loss / 2;
 }
 
 export const fmt = (value, digits = 2) =>

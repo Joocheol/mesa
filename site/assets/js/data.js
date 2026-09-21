@@ -1,5 +1,5 @@
-// Loads the fixed SK hynix snapshot and splits it chronologically.
-// Pages before Round 3 must never call `sealed()`; the final 20% is the exam.
+// Loads the active versioned market snapshot and splits it chronologically.
+// Pages before Round 3 must never call `sealed()`; the final 20% is held out for the class sequence.
 import { logReturns, mean, sd } from "./stats.js";
 import { fitGarchT } from "./models.js";
 
@@ -79,7 +79,7 @@ export async function loadMarket() {
     valReturns,
     estimates,
     open, // prices & returns visible before the final exam
-    // Sealed accessor: only Round 3 / final pages should call this.
+    // Held-out accessor: only Round 3 / final pages should call this.
     sealed: () => ({ testReturns, testRows: rows.slice(nTrain + nVal), range: cache.split.testRange }),
     garch: () => getGarch(trainReturns),
   };
