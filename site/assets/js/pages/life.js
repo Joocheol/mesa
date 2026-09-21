@@ -13,7 +13,7 @@ let gen = 0;
 let timer = null;
 const history = [];
 
-$("#pattern").innerHTML = Object.entries(PATTERNS).map(([k, p]) => `<option value="${k}">${p.name}</option>`).join("");
+$("#pattern").innerHTML = Object.entries(PATTERNS).map(([k, p]) => `<option value="${k}"${k === "glider" ? " selected" : ""}>${p.name}</option>`).join("");
 bindRange($("#speed"), $("#speed-out"), (v) => `${v} 세대/초`); bindRange($("#seed"), $("#seed-out"));
 
 function draw(canvas, grid, highlight) {
