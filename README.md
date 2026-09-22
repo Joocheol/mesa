@@ -4,6 +4,17 @@
 
 시뮬레이션을 처음 접하는 참가자는 첫 활동 전에 [`site/guide.html`](site/guide.html)의 10분 개념 가이드를 읽는다. 모형·모수·시드·경로·분포·검증 구간·검사표·ABM을 비전공자 언어로 설명하며, 모든 활동 상단에서 관련 항목으로 다시 이동할 수 있다.
 
+## 현재 운영 배포
+
+- 워크숍: [fake-market-workshop.joocheol.chatgpt.site](https://fake-market-workshop.joocheol.chatgpt.site/)
+- 참가자 입장: [join.html?class=MESA](https://fake-market-workshop.joocheol.chatgpt.site/join.html?class=MESA)
+- 프로젝터: [present.html?class=MESA](https://fake-market-workshop.joocheol.chatgpt.site/present.html?class=MESA)
+- 강사 콘솔: [facilitate.html](https://fake-market-workshop.joocheol.chatgpt.site/facilitate.html)
+
+강사는 개인 노트북에서 강사 콘솔을 열고, 강의실 Windows PC는 프로젝터 화면만 띄운다. 참가자는 자신의 기기로 입장한다. 체크인·투표·프로젝터 읽기 흐름은 50개 동시 기기 시나리오로 확인했다. 외부 참가자 수업 전에는 Sites 접근 범위가 참가자에게 열려 있는지 별도로 확인해야 한다.
+
+0교시 동전 던지기 판정기는 한 판의 최장 run만으로 사람을 판정하지 않는다. 균형, run 수, 상위 run 길이, singleton run 비율, 극단적으로 긴 run을 함께 보고 같은 팀의 3회 결과를 누적한다. 화면의 확률은 검증된 신원 판별 정확도가 아니라 수업용 모형의 추정값이다.
+
 ```bash
 node scripts/dev_server.mjs 8787      # http://127.0.0.1:8787 · 강사 비밀번호 mesa
 ```
@@ -78,7 +89,7 @@ node scripts/dev_server.mjs 8787           # 로컬 수업 서버 (in-memory D1)
 python3 scripts/build_sites_worker.py      # dist/server/index.js + dist/.openai/{hosting.json,drizzle/}
 ```
 
-`main`에 푸시하면 GitHub Actions가 테스트를 돌린 뒤 `site/`를 **GitHub Pages**에 배포한다. 실시간 팀 투표를 쓰려면 `dist/`를 Sites + D1에 배포하고 환경 비밀값을 설정한다. 오프라인 공개 버튼은 API 연결이 실패한 경우에만 나타난다. 클래스 코드·클라이언트 계산 점수·UI 잠금은 인증이나 고부담 평가 통제가 아니다. 자세한 절차는 [`docs/workshop/deployment.md`](docs/workshop/deployment.md).
+`main`에 푸시하면 GitHub Actions가 테스트를 돌린 뒤 `site/`를 **GitHub Pages**에도 배포한다. 실시간 수업용 운영본은 Sites + D1에 배포되어 있으며, 환경 비밀값과 접근 범위는 Sites에서 관리한다. 오프라인 공개 버튼은 API 연결이 실패한 경우에만 나타난다. 클래스 코드·클라이언트 계산 점수·UI 잠금은 인증이나 고부담 평가 통제가 아니다. 자세한 절차는 [`docs/workshop/deployment.md`](docs/workshop/deployment.md).
 
 ## Mesa 입문 예제
 
