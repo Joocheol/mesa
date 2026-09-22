@@ -1,0 +1,159 @@
+{
+  "note": "강사가 작성한 가상 예시 응답입니다. 라이브 또는 사전 LLM 호출 결과가 아니며, LLM 행동에 관한 관측자료로 사용하면 안 됩니다. 형식만 실제 LLM에게 요구하는 JSON과 같습니다.",
+  "prompt_template": "당신은 교육용 단일가 경매의 참가자입니다. 실제 투자 조언이 아닙니다.\n역할: {role} — {role_desc}\n개인 상황: 현금 {cash}, 주식 {stock}주\n공통 뉴스: {news}\n현재 가격: {price}\n매수·매도·관망 중 하나를 제안하세요. 예측이 아니라 역할과 제약을 근거로 판단하세요. 코드 블록 없이 다음 JSON만 반환하세요.\n{\"action\":\"buy|sell|hold\",\"limit_price\":정수 또는 null,\"reason\":\"두 문장 이하\"}\n결정은 제안일 뿐이며 사람이 확인해야 주문에 반영됩니다.",
+  "agents": ["LLM-1", "LLM-2", "LLM-3", "LLM-4"],
+  "responses": {
+    "value": {
+      "0": [
+        {"action": "hold", "limit_price": null, "reason": "실적은 좋았지만 경영진이 수요 둔화를 언급했습니다. 기준가치 대비 현재 가격이 싸다고 볼 근거가 부족해 관망합니다."},
+        {"action": "buy", "limit_price": 101, "reason": "실적 상회는 기준가치를 소폭 높입니다. 현재가 근처에서 1주 매수합니다."},
+        {"action": "hold", "limit_price": null, "reason": "수요 둔화 언급이 실적 상회를 상쇄합니다. 가치 판단이 바뀌지 않아 관망합니다."},
+        {"action": "buy", "limit_price": 100, "reason": "실적이 예상을 넘었으므로 현재 가격은 가치 대비 낮다고 판단합니다. 현재가에 매수합니다."}
+      ],
+      "1": [
+        {"action": "buy", "limit_price": 102, "reason": "장기 계약 연장은 미래 현금흐름의 안정성을 높입니다. 기준가치 상향으로 매수합니다."},
+        {"action": "buy", "limit_price": 101, "reason": "규모는 모르지만 계약 연장은 가치에 긍정적입니다. 소폭 프리미엄으로 매수합니다."},
+        {"action": "hold", "limit_price": null, "reason": "계약 규모가 공개되지 않아 가치 변화를 추정할 수 없습니다. 관망합니다."},
+        {"action": "buy", "limit_price": 102, "reason": "장기 공급 계약은 기준가치를 높이는 뉴스입니다. 매수합니다."}
+      ],
+      "2": [
+        {"action": "sell", "limit_price": 99, "reason": "경쟁사 증설은 장기 마진을 낮춥니다. 기준가치 하향으로 1주 매도합니다."},
+        {"action": "hold", "limit_price": null, "reason": "증설 효과는 수년 뒤에 나타납니다. 당장 가치가 바뀌지 않아 관망합니다."},
+        {"action": "sell", "limit_price": 100, "reason": "가격 경쟁 우려는 가치 추정치를 낮춥니다. 현재가에 매도합니다."},
+        {"action": "sell", "limit_price": 99, "reason": "업계 공급 과잉 위험이 커졌습니다. 기준가치를 낮추고 매도합니다."}
+      ],
+      "3": [
+        {"action": "hold", "limit_price": null, "reason": "거시 뉴스는 이 회사의 기준가치를 직접 바꾸지 않습니다. 관망합니다."},
+        {"action": "buy", "limit_price": 98, "reason": "위험자산 약세로 가격이 가치 아래로 내려오면 매수 기회입니다. 낮은 지정가로 대기합니다."},
+        {"action": "hold", "limit_price": null, "reason": "금리 발언은 할인율을 높이지만 폭이 불확실합니다. 관망합니다."},
+        {"action": "buy", "limit_price": 98, "reason": "매파적 발언으로 가격이 내리면 가치 대비 싸집니다. 낮은 가격에 매수 주문을 냅니다."}
+      ],
+      "4": [
+        {"action": "hold", "limit_price": null, "reason": "새 정보가 없습니다. 가치 판단을 바꿀 이유가 없어 관망합니다."},
+        {"action": "hold", "limit_price": null, "reason": "뉴스가 없고 거래량이 얇습니다. 관망합니다."},
+        {"action": "hold", "limit_price": null, "reason": "정보 없이 거래하면 비용만 듭니다. 관망합니다."},
+        {"action": "buy", "limit_price": 99, "reason": "얇은 거래량에서 낮은 지정가로 대기하면 유리하게 체결될 수 있습니다."}
+      ],
+      "5": [
+        {"action": "buy", "limit_price": 101, "reason": "자사주 매입은 주당 가치를 높입니다. 매수합니다."},
+        {"action": "buy", "limit_price": 101, "reason": "경영진이 저평가로 판단한 신호입니다. 매수합니다."},
+        {"action": "hold", "limit_price": null, "reason": "1% 규모는 가치에 미치는 영향이 작습니다. 관망합니다."},
+        {"action": "buy", "limit_price": 102, "reason": "자사주 매입은 유통 주식을 줄여 주당 가치를 올립니다. 매수합니다."}
+      ]
+    },
+    "trend": {
+      "0": [
+        {"action": "buy", "limit_price": 102, "reason": "실적 상회는 상승 추세의 시작일 수 있습니다. 추세를 따라 매수합니다."},
+        {"action": "buy", "limit_price": 102, "reason": "긍정적 서프라이즈 이후 가격이 오르는 경향이 있습니다. 매수합니다."},
+        {"action": "buy", "limit_price": 101, "reason": "추세가 아직 형성되지 않았지만 첫 뉴스가 긍정적이라 소폭 매수합니다."},
+        {"action": "buy", "limit_price": 102, "reason": "실적 상회 뉴스는 모멘텀의 출발점입니다. 매수합니다."}
+      ],
+      "1": [
+        {"action": "buy", "limit_price": 103, "reason": "연속된 긍정 뉴스로 상승 추세가 강화됩니다. 매수합니다."},
+        {"action": "buy", "limit_price": 103, "reason": "추세가 이어지고 있습니다. 매수합니다."},
+        {"action": "buy", "limit_price": 102, "reason": "두 번째 호재로 모멘텀이 확인됐습니다. 매수합니다."},
+        {"action": "buy", "limit_price": 103, "reason": "상승 추세가 확인되었으므로 추종 매수합니다."}
+      ],
+      "2": [
+        {"action": "sell", "limit_price": 98, "reason": "부정적 뉴스가 추세를 꺾을 수 있습니다. 매도해 위험을 줄입니다."},
+        {"action": "hold", "limit_price": null, "reason": "추세가 아직 꺾이지 않았습니다. 다음 가격을 보고 판단합니다."},
+        {"action": "sell", "limit_price": 99, "reason": "추세 반전 신호로 봅니다. 매도합니다."},
+        {"action": "sell", "limit_price": 98, "reason": "악재로 하락 추세가 시작될 수 있습니다. 매도합니다."}
+      ],
+      "3": [
+        {"action": "sell", "limit_price": 97, "reason": "위험자산 전반의 약세로 하락 추세입니다. 매도합니다."},
+        {"action": "sell", "limit_price": 98, "reason": "하락 추세가 이어집니다. 매도합니다."},
+        {"action": "sell", "limit_price": 97, "reason": "추세가 아래로 향합니다. 매도합니다."},
+        {"action": "sell", "limit_price": 98, "reason": "약세 흐름을 따라 매도합니다."}
+      ],
+      "4": [
+        {"action": "hold", "limit_price": null, "reason": "추세 신호가 없습니다. 관망합니다."},
+        {"action": "hold", "limit_price": null, "reason": "뉴스가 없어 방향을 알 수 없습니다. 관망합니다."},
+        {"action": "hold", "limit_price": null, "reason": "거래량이 얇은 구간에서는 추세 판단이 어렵습니다. 관망합니다."},
+        {"action": "hold", "limit_price": null, "reason": "방향이 없으면 거래하지 않습니다."}
+      ],
+      "5": [
+        {"action": "buy", "limit_price": 102, "reason": "자사주 매입 발표 뒤 주가가 오르는 경향이 있습니다. 매수합니다."},
+        {"action": "buy", "limit_price": 102, "reason": "호재로 상승 추세 전환을 기대합니다. 매수합니다."},
+        {"action": "buy", "limit_price": 101, "reason": "긍정 뉴스는 모멘텀을 되살립니다. 매수합니다."},
+        {"action": "buy", "limit_price": 102, "reason": "자사주 매입은 상승 촉매입니다. 매수합니다."}
+      ]
+    },
+    "loss": {
+      "0": [
+        {"action": "hold", "limit_price": null, "reason": "수요 둔화 언급이 걱정됩니다. 손실 위험을 피해 관망합니다."},
+        {"action": "hold", "limit_price": null, "reason": "실적은 좋지만 앞으로의 불확실성이 큽니다. 관망합니다."},
+        {"action": "sell", "limit_price": 100, "reason": "수요 둔화 경고는 손실 가능성을 높입니다. 현재가에 1주 줄입니다."},
+        {"action": "hold", "limit_price": null, "reason": "엇갈린 뉴스에서는 움직이지 않는 것이 손실을 피하는 길입니다."}
+      ],
+      "1": [
+        {"action": "hold", "limit_price": null, "reason": "좋은 뉴스지만 규모를 모릅니다. 손실 위험을 감수하지 않습니다."},
+        {"action": "buy", "limit_price": 100, "reason": "계약 연장으로 하방 위험이 줄었습니다. 현재가에 소량 매수합니다."},
+        {"action": "hold", "limit_price": null, "reason": "규모 미공개는 불확실성입니다. 관망합니다."},
+        {"action": "hold", "limit_price": null, "reason": "보유 주식으로 충분합니다. 추가 위험을 지지 않습니다."}
+      ],
+      "2": [
+        {"action": "sell", "limit_price": 99, "reason": "가격 경쟁 우려는 큰 손실로 이어질 수 있습니다. 매도합니다."},
+        {"action": "sell", "limit_price": 98, "reason": "악재 뒤 손실을 피하려면 먼저 파는 것이 낫습니다. 매도합니다."},
+        {"action": "sell", "limit_price": 99, "reason": "손실 가능성이 커졌습니다. 1주 매도합니다."},
+        {"action": "sell", "limit_price": 99, "reason": "공급 과잉 위험을 피해 매도합니다."}
+      ],
+      "3": [
+        {"action": "sell", "limit_price": 98, "reason": "위험자산 약세에서 손실을 줄이기 위해 매도합니다."},
+        {"action": "sell", "limit_price": 97, "reason": "매파적 발언은 추가 하락 위험입니다. 매도합니다."},
+        {"action": "sell", "limit_price": 98, "reason": "손실 확대를 막기 위해 매도합니다."},
+        {"action": "hold", "limit_price": null, "reason": "이미 줄인 상태라면 추가 매도는 바닥에 파는 위험이 있습니다. 관망합니다."}
+      ],
+      "4": [
+        {"action": "hold", "limit_price": null, "reason": "뉴스가 없으면 위험을 늘리지 않습니다. 관망합니다."},
+        {"action": "hold", "limit_price": null, "reason": "얇은 거래량에서 움직이면 불리하게 체결될 수 있습니다. 관망합니다."},
+        {"action": "hold", "limit_price": null, "reason": "관망합니다."},
+        {"action": "hold", "limit_price": null, "reason": "새 정보가 없습니다. 관망합니다."}
+      ],
+      "5": [
+        {"action": "hold", "limit_price": null, "reason": "자사주 매입은 긍정적이지만 손실 회피 관점에서 추가 매수는 하지 않습니다."},
+        {"action": "buy", "limit_price": 100, "reason": "회사가 하방을 지지하는 신호입니다. 현재가에 소량 매수합니다."},
+        {"action": "hold", "limit_price": null, "reason": "1% 규모는 보호 효과가 작습니다. 관망합니다."},
+        {"action": "hold", "limit_price": null, "reason": "관망합니다."}
+      ]
+    },
+    "cash": {
+      "0": [
+        {"action": "sell", "limit_price": 101, "reason": "현금이 필요합니다. 실적 상회로 가격이 좋을 때 1주 매도합니다."},
+        {"action": "sell", "limit_price": 100, "reason": "현금 확보가 우선입니다. 현재가에 매도합니다."},
+        {"action": "sell", "limit_price": 101, "reason": "좋은 뉴스에 매도해 현금을 확보합니다."},
+        {"action": "sell", "limit_price": 100, "reason": "현금 수요를 충족하기 위해 매도합니다."}
+      ],
+      "1": [
+        {"action": "sell", "limit_price": 102, "reason": "호재로 가격이 오른 김에 매도해 현금을 확보합니다."},
+        {"action": "sell", "limit_price": 101, "reason": "현금 확보가 목표입니다. 매도합니다."},
+        {"action": "hold", "limit_price": null, "reason": "가격이 더 오를 것 같아 다음 라운드에 팔겠습니다. 이번엔 관망합니다."},
+        {"action": "sell", "limit_price": 102, "reason": "유리한 가격에 현금화합니다."}
+      ],
+      "2": [
+        {"action": "sell", "limit_price": 99, "reason": "악재로 가격이 더 내리기 전에 현금화합니다."},
+        {"action": "sell", "limit_price": 98, "reason": "현금이 필요하므로 가격과 무관하게 매도합니다."},
+        {"action": "sell", "limit_price": 99, "reason": "현금 확보를 위해 매도합니다."},
+        {"action": "sell", "limit_price": 99, "reason": "매도합니다."}
+      ],
+      "3": [
+        {"action": "sell", "limit_price": 98, "reason": "현금 수요가 있어 약세에도 매도합니다."},
+        {"action": "sell", "limit_price": 97, "reason": "현금 확보가 우선입니다. 매도합니다."},
+        {"action": "sell", "limit_price": 98, "reason": "매도합니다."},
+        {"action": "hold", "limit_price": null, "reason": "너무 낮은 가격에 파는 비용이 큽니다. 한 라운드 기다립니다."}
+      ],
+      "4": [
+        {"action": "sell", "limit_price": 100, "reason": "현금이 필요합니다. 현재가에 매도합니다."},
+        {"action": "sell", "limit_price": 100, "reason": "매도합니다."},
+        {"action": "sell", "limit_price": 101, "reason": "얇은 거래량에서 약간 높은 가격에 매도를 시도합니다."},
+        {"action": "sell", "limit_price": 100, "reason": "현금 확보를 위해 매도합니다."}
+      ],
+      "5": [
+        {"action": "sell", "limit_price": 102, "reason": "자사주 매입 호재에 가격이 오르면 매도해 현금을 확보합니다."},
+        {"action": "sell", "limit_price": 101, "reason": "매도합니다."},
+        {"action": "sell", "limit_price": 102, "reason": "좋은 가격에 현금화합니다."},
+        {"action": "sell", "limit_price": 101, "reason": "현금 수요를 채웁니다."}
+      ]
+    }
+  }
+}

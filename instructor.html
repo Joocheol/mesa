@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>강사 콘솔 · 가짜 주식시장</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="instructor">
+<main class="shell">
+  <div class="page-head"><div><p class="eyebrow">강사 전용</p><h1>강사 콘솔</h1><p class="lead muted">라운드 열기·마감·정답 공개, 제출 현황, 초기화. 정답 문자는 데이터에서 자동으로 계산되어 함께 전송됩니다.</p></div><div class="meta"><label class="pill" style="margin:0">수업 코드 <input type="text" id="class-code" value="MESA" style="width:90px;display:inline-block;margin-left:.4rem"></label></div></div>
+
+  <form id="login" class="card" style="max-width:480px">
+    <div class="field"><label for="password">강사 비밀번호</label><input id="password" type="password" autocomplete="current-password"></div>
+    <div class="actions"><button class="button primary" type="submit">로그인</button></div>
+    <p class="small muted">비밀번호 해시와 서명 키는 서버 환경 변수에만 있습니다. 로컬 개발 서버의 기본 비밀번호는 <code>mesa</code>. 이 콘솔은 수업 진행 도구이며 보안 수준의 비밀 유지를 주장하지 않습니다.</p>
+    <div id="login-status" class="status hidden"></div>
+  </form>
+
+  <div id="console" class="hidden">
+    <div class="actions"><span class="pill" id="console-state">—</span><button class="button small" id="logout" type="button">로그아웃</button><button class="button small danger" id="reset-all" type="button">이 수업의 모든 투표·점수 초기화</button></div>
+    <div class="grid three" id="rounds"></div>
+    <section class="card" style="margin-top:1rem"><div class="section-head"><h3 id="votes-title">제출 현황</h3><div class="choice-row" id="round-tabs"></div></div><div class="table-wrap"><table id="votes"></table></div></section>
+    <section class="card" style="margin-top:1rem"><h3>생성 점수 제출 현황</h3><div class="table-wrap"><table id="scores"></table></div></section>
+    <div id="console-status" class="status hidden"></div>
+  </div>
+
+  <section class="card soft" style="margin-top:1.5rem">
+    <p class="eyebrow">진행 순서 요약</p>
+    <ol class="small">
+      <li>0교시 시작 전: 수업 코드를 정하고(기본 MESA) 참가자가 join.html로 입장하게 한다.</li>
+      <li>R1(1교시 끝): 라운드가 "접수 중"인지 확인 → 팀 제출 확인 → 2교시 시작 때 <strong>공개</strong>.</li>
+      <li>R2(2교시 끝): 같은 방식. 공개하면 리더보드에 라운드별 정답률과 평균 확신도가 쌓인다.</li>
+      <li>R3(4교시): <strong>"열기"를 누르면 참가자 화면의 수업 진행 잠금이 풀린다.</strong> 공개 데이터의 보안 장치는 아니다. 그 전에는 열지 말 것. 판별 제출 후 공개.</li>
+      <li>초기화는 새 수업(다른 회차) 시작 전에만. 되돌릴 수 없다.</li>
+    </ol>
+  </section>
+  <p class="page-nav"><a class="button" href="index.html">← 개요</a><a class="button primary" href="facilitate.html">통합 수업 진행 →</a><a class="button" href="leaderboard.html">리더보드 →</a></p>
+</main>
+<script type="module" src="assets/js/pages/instructor.js"></script>
+</body>
+</html>

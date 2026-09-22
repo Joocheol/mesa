@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3c · 규칙이 시장이 된다 — ABM이라는 분야 · 가짜 주식시장</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="abm">
+<main class="shell">
+  <div data-page-head data-weapon="전망 · 코드 없이 규칙 조립 · 점수 없음"></div>
+  <div class="callout question"><p class="eyebrow">시작 질문</p><strong>여러분이 4라운드 만에 만든 규칙에서, 두꺼운 꼬리와 변동성 군집이 저절로 나올까?</strong><p class="small muted">GBM·GARCH는 "결과(통계치)"를 직접 겨냥한 하향식 모형입니다. 행위자 기반 모형(ABM)은 개별 참여자의 규칙만 정하고, 통계치는 시장에서 <em>저절로 나오길</em> 기다립니다 — Game of Life에서 본 창발을 시장에 적용한 것입니다. 이 페이지는 채점하지 않습니다. 오늘 배운 검사표를 들이대 보되, 결론은 "이 분야가 어디까지 왔고 무엇이 더 연구되어야 하는가"입니다.</p></div>
+
+  <section class="card soft">
+    <p class="eyebrow">3a에서 적은 우리 팀 규칙</p>
+    <div id="team-rules" class="small"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><p class="eyebrow">1 · 에이전트 조립</p><h2>참여자 유형과 규칙</h2></div><p class="small muted">각 유형은 IF … THEN … 절의 목록입니다. 위에서부터 첫 번째로 맞는 절이 실행되고, 맞는 절이 없으면 관망합니다. 주문은 항상 1주, 지정가는 직전가 ± 오프셋(%).</p></div>
+    <div class="grid two" id="agent-cards"></div>
+  </section>
+
+  <section class="section grid two">
+    <div class="card">
+      <p class="eyebrow">2 · 실행</p>
+      <div class="controls">
+        <div class="field"><label>라운드 수 <span class="value" id="rounds-out"></span></label><input type="range" id="rounds" min="100" max="600" step="50" value="250"></div>
+        <div class="field"><label>뉴스가 나올 확률 <span class="value" id="news-out"></span></label><input type="range" id="newsProb" min="0" max="1" step="0.05" value="0.4"></div>
+        <div class="field"><label>시드 <span class="value" id="seed-out"></span></label><input type="range" id="seed" min="1" max="99" value="1"></div>
+      </div>
+      <div class="actions"><button class="button primary" id="run" type="button">시장 실행</button></div>
+      <div id="run-status" class="status hidden"></div>
+      <div class="table-wrap"><table id="checks"></table></div>
+      <p class="small muted">위 다섯 항목은 점수가 아니라 관찰입니다. 2b의 GARCH-t와 비교하되, GARCH는 조건부 변동성의 지속성을 간결하게 기술하고 ABM은 참여자 수준의 가설을 명시한다는 차이에 주목하세요. 어느 쪽도 그 자체로 인과를 증명하지 않습니다.</p>
+      <div class="table-wrap" style="margin-top:.6rem"><table id="compare"></table></div>
+      <p class="small muted">비교 대상은 추정 구간 실제 지수 일별 수익률. 라운드 ≠ 거래일이므로 변동성 크기가 아니라 <strong>모양</strong>(첨도·ACF)을 봅니다.</p>
+    </div>
+    <div class="card">
+      <div class="chart" id="price"></div><p class="chart-caption">체결 가격 (로그축)</p>
+      <div class="chart" id="returns"></div><p class="chart-caption">라운드별 로그수익률 — 변동이 몰리는 구간이 있는가?</p>
+      <div class="table-wrap"><table id="types-table"></table></div>
+    </div>
+  </section>
+
+  <section class="card highlight">
+    <div class="section-head"><div><p class="eyebrow">3 · 가정 하나만 바꾸기</p><h3>추세추종 비율 실험</h3></div><button class="button" id="sweep" type="button">추세추종 0 / 5 / 15 / 30명으로 4번 실행</button></div>
+    <div class="callout question"><p class="eyebrow">실행 전 예상</p>추세추종 에이전트를 늘리면 첨도와 ACF는 어느 쪽으로 움직일까? 가격은?</div>
+    <div class="table-wrap"><table id="sweep-table"></table></div>
+    <div class="callout"><p class="eyebrow">정리 한 줄</p>개별 규칙 어디에도 "급락"이나 "변동성 군집"은 적혀 있지 않습니다. 그것은 규칙들의 <strong>상호작용에서 창발</strong>합니다. 이 모형은 "추세추종이 많아서"라는 참여자 수준의 <em>메커니즘 가설</em>을 표현할 수 있습니다. GARCH만으로는 그런 미시적 설명을 제공하지 않지만, 어느 쪽도 그 자체로 원인을 증명하지는 않습니다.</div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><p class="eyebrow">4 · 전망</p><h2>ABM이라는 분야 — 어디까지 왔고, 무엇이 더 연구되어야 하는가</h2></div></div>
+    <div class="grid three">
+      <div class="card"><p class="eyebrow">고전 · 1990년대~2000년대</p><ul class="small">
+        <li><a href="https://webhome.phy.duke.edu/~palmer/papers/ahlpt96.html" target="_blank" rel="noreferrer"><strong>Santa Fe 인공 주식시장</strong></a> (Arthur, Holland, LeBaron, Palmer, Tayler 1997) — 학습하는 트레이더가 기대를 바꾸는 모형에서 특정 조건 아래 기술적 거래, 일시적 거품·붕괴, 실제 시장과 비슷한 GARCH형 특징이 나타남.</li>
+        <li><a href="https://www.nature.com/articles/17290" target="_blank" rel="noreferrer"><strong>Lux &amp; Marchesi (1999, <em>Nature</em>)</strong></a> — 참여자 상호작용만으로 수익률의 스케일링과 변동성의 시간 의존성이 생길 수 있음을 보인 모형. 오늘 우리 모형에 없던 전략 간 전환이 핵심.</li>
+        <li><a href="https://www.nature.com/articles/460685a" target="_blank" rel="noreferrer"><strong>Farmer &amp; Foley (2009, <em>Nature</em>)</strong></a> "The economy needs agent-based modelling" — 금융위기 직후, 정책 실험에서 행위자 기반 접근의 필요성을 주장한 논평.</li>
+      </ul></div>
+      <div class="card"><p class="eyebrow">정책·실무 · 2010년대~</p><ul class="small">
+        <li><a href="https://www.bankofengland.co.uk/working-paper/2016/macroprudential-policy-in-an-agent-based-model-of-the-uk-housing-market" target="_blank" rel="noreferrer"><strong>영란은행 주택시장 ABM</strong></a> (Baptista 외, BoE Staff Working Paper 619, 2016) — 가계 이질성을 보정한 모형에서 임대 부문과 대출소득비율(LTI) 포트폴리오 한도를 비교 정태로 시험.</li>
+        <li><strong>Bookstaber, <em>The End of Theory</em> (2017)</strong> — 위기의 전염을 ABM으로 다뤄야 하는 이유를 리스크 실무자 시각에서 정리.</li>
+        <li><a href="https://www.aeaweb.org/articles?id=10.1257/jel.20221319" target="_blank" rel="noreferrer"><strong>Axtell &amp; Farmer (2025)</strong></a>, "Agent-Based Modeling in Economics and Finance: Past, Present, and Future" (<em>Journal of Economic Literature</em>) — 분야 전체 조망과 현실성·검증·계산 규모 등 남은 장애물을 정리.</li>
+        <li>도구: Python <strong>Mesa</strong>(이 저장소의 <code>app0~6.py</code>가 입문 예제), NetLogo, Julia Agents.jl.</li>
+      </ul></div>
+      <div class="card highlight"><p class="eyebrow">더 연구되어야 할 것</p><ul class="small">
+        <li><strong>검증과 보정</strong> — 오늘 하루의 주제가 ABM에서 가장 어렵습니다. 모수가 많고 결과가 시드에 민감해, 어떤 검사표를 통과해야 "맞는 모형"인지 합의가 없습니다.</li>
+        <li><strong>행동 규칙의 근거</strong> — 규칙을 사람이 쓰면 자의적이고, 데이터에서 추정하면 미시 데이터가 부족합니다. 다음 페이지의 <strong>LLM 에이전트</strong>는 이 빈칸을 자연어 판단으로 채우려는 최신 시도입니다.</li>
+        <li><strong>규모와 이질성</strong> — 참여자·자산·규제 제약을 늘릴수록 계산 비용과 식별 문제가 커집니다. 은행 스트레스 테스트처럼 연결 구조가 중요한 용도에는 네트워크 자료와 별도의 검증 설계가 필요합니다.</li>
+        <li><strong>다음 실험 제안</strong>: 위 규칙 조립기에 "최근 20라운드에 돈을 번 유형으로 갈아탄다"는 절을 추가해 보세요. 변동성 군집이 생기는지 — Lux–Marchesi의 발견을 여러분 손으로 재현하는 셈입니다.</li>
+      </ul></div>
+    </div>
+    <div class="callout"><p class="eyebrow">이 페이지의 결론</p>ABM은 참여자 규칙과 상호작용이라는 <strong>검증 가능한 메커니즘 가설</strong>을 표현할 수 있습니다. 그러나 그 규칙이 현실에 맞는지, 다른 메커니즘도 같은 결과를 만드는지 별도로 검증해야 합니다. 구조모형·시계열모형과 경쟁시키고 미시자료로 보정해야 은행 의사결정에 쓸 수 있습니다.</div>
+    <div class="card"><div class="field"><label for="abm-notes">팀 기록 — 우리 규칙 조합이 만든 것 / 만들지 못한 것 / 더 알고 싶은 것</label><textarea id="abm-notes"></textarea></div><div class="actions"><button class="button" id="save" type="button">저장</button><span class="small muted" id="save-status"></span></div></div>
+  </section>
+
+  <nav data-page-nav></nav>
+</main>
+<script type="module" src="assets/js/pages/abm.js"></script>
+</body>
+</html>

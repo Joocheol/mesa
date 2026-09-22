@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4a · 규칙 대신 LLM을 앉히면? · 가짜 주식시장</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="llm">
+<main class="shell">
+  <div data-page-head data-weapon="연구 소개 10분 · 동조 가설 시연 20분"></div>
+  <div class="callout question"><p class="eyebrow">시작 질문</p><strong>같은 역할과 뉴스를 반복 입력하면 응답 다양성은 얼마나 남을까?</strong><p class="small muted">아래 네 응답은 실제 독립 실험 결과가 아니라 강사가 작성한 가상 예시입니다. 먼저 예상하고, 가능하면 외부 AI에 같은 프롬프트를 여러 번 실행해 실제 결과와 구분해 기록하세요.</p></div>
+
+  <section class="section">
+    <div class="section-head"><div><p class="eyebrow">A · 연구 브리핑</p><h2>연구가 관찰한 것 / 강사의 해석</h2></div></div>
+    <div class="grid three" id="research"></div>
+    <p class="small muted">확인일 2026-09-20. 각 연구의 설정 안에서 보고된 결과이며, LLM 시장이 현실을 재현한다는 보장이 아닙니다. 전통적 ABM은 3c처럼 사람이 규칙을 쓰고, LLM 에이전트는 그 규칙을 자연어 판단으로 대체합니다 — 규칙이 투명하던 것이 블랙박스가 됩니다.</p>
+  </section>
+
+  <section class="section grid two">
+    <div class="card">
+      <p class="eyebrow">B · 프롬프트</p>
+      <div class="controls">
+        <div class="field"><label for="role">역할</label><select id="role"></select></div>
+        <div class="field"><label for="news">공통 뉴스</label><select id="news"></select></div>
+        <div class="field"><label for="price">현재 가격</label><input type="number" id="price" value="100"></div>
+      </div>
+      <textarea id="prompt" readonly style="min-height:200px"></textarea>
+      <div class="actions"><button class="button" id="copy" type="button">프롬프트 복사</button><span class="small muted">외부 AI에 붙여넣고, 응답 JSON을 아래에 붙여 넣으세요. 이 페이지는 API 키 없이 동작합니다.</span></div>
+      <div class="field"><label for="response">AI 응답 JSON (직접 붙여넣기)</label><textarea id="response" placeholder='{"action":"buy","limit_price":101,"reason":"…"}'></textarea></div>
+      <div class="actions"><button class="button primary" id="validate" type="button">검증</button><label class="small" style="margin:0"><input type="checkbox" id="human-ok"> 사람이 내용을 확인했다</label><button class="button small" id="to-market" type="button" disabled>3a 시장의 LLM 팀 주문으로 보내기</button></div>
+      <div id="validate-status" class="status hidden"></div>
+    </div>
+    <div class="card">
+      <p class="eyebrow">C · 동조 가설 시연 — 강사 작성 예시 4개</p>
+      <p class="small muted">아래 응답은 <strong>LLM이 생성한 관측자료가 아니라 2026-09-21에 강사가 작성한 가상 사례</strong>입니다. 일치율은 인터페이스 사용법과 연구 질문을 보여 줄 뿐, LLM 행동에 대한 증거가 아닙니다.</p>
+      <div class="table-wrap"><table id="llm-table"></table></div>
+      <div class="grid three" id="agreement"></div>
+      <div class="table-wrap" style="margin-top:.6rem"><table id="human-table"></table></div>
+      <p class="small muted" id="human-note"></p>
+    </div>
+  </section>
+
+  <section class="card highlight">
+    <p class="eyebrow">D · 시스템 위험으로의 연결</p>
+    <div class="grid two">
+      <div><p>다수 에이전트가 같은 이유로 같은 방향으로 움직인다면 시스템 위험이 커질 수 있다는 것이 <strong>검증할 가설</strong>입니다. 3c의 추세추종 비율 실험은 가능한 메커니즘 하나를 보여 줄 뿐, LLM 동조가 실제 시장 꼬리를 만들었다는 증거는 아닙니다.</p><p class="small muted">"그럴듯한 서사"와 "관측된 결과"를 구분하세요. 실제 비교에는 같은 역할·같은 정보·반복 표본·모델 버전과 생성 설정 기록이 필요합니다.</p></div>
+      <div><div class="field"><label for="llm-notes">팀 기록 — 예상과 실제 일치율, 사람과 LLM의 차이, 검증할 수 없는 것</label><textarea id="llm-notes"></textarea></div><div class="actions"><button class="button" id="save" type="button">저장</button><span class="small muted" id="save-status"></span></div></div>
+    </div>
+  </section>
+
+  <nav data-page-nav></nav>
+</main>
+<script type="module" src="assets/js/pages/llm.js"></script>
+</body>
+</html>

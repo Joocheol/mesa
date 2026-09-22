@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>리더보드 · 가짜 주식시장</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="leaderboard">
+<main class="shell">
+  <div class="page-head"><div><p class="eyebrow">인간 GAN 토너먼트</p><h1>리더보드</h1><p class="lead muted">공개된 라운드의 3범주 Brier 보상. 수리 모형의 범위 포함 수는 별도 진단으로 표시하며 총점에 섞지 않습니다. 3초마다 갱신.</p></div><div class="meta"><span class="pill" id="lb-state">불러오는 중…</span><label class="pill" style="margin:0">수업 코드 <input type="text" id="class-code" aria-label="리더보드 수업 코드" style="width:90px;display:inline-block;margin-left:.4rem"></label></div></div>
+  <div class="grid three" id="round-states"></div>
+  <div class="card" style="margin-top:1rem"><div class="table-wrap"><table id="board"></table></div><p class="small muted">선택한 답에 p, 나머지 두 답에 (1−p)/2를 배분해 3범주 Brier loss를 계산합니다. 표에는 1−loss/2 보상을 표시합니다. 2b의 ‘범위 안’ 개수는 정식 검정이나 점수가 아니라 모형 진단 체크리스트입니다.</p></div>
+  <section class="grid two" style="margin-top:1rem">
+    <div class="card"><p class="eyebrow">확신도–정답률 수업 요약</p><div class="chart" id="calibration"></div><p class="chart-caption">공개된 라운드의 학급 응답 요약. 모든 팀이 같은 3문항에 답하므로 정식 보정 검증이나 독립 표본으로 해석하지 않습니다.</p></div>
+    <div class="card"><p class="eyebrow">라운드별 정답률과 평균 확신도</p><div class="table-wrap"><table id="rounds-table"></table></div><p class="small muted">무기가 눈 → 숫자 → 처음 보는 구간으로 바뀌면서 정답률과 확신도가 어떻게 함께 움직이는지가 오늘의 관전 포인트입니다. 세 문항만으로 팀의 보정도를 판정하지는 않습니다.</p></div>
+  </section>
+  <p class="page-nav"><a class="button" href="index.html">← 개요</a><a class="button" href="12-final.html">5교시 설명서 →</a></p>
+</main>
+<script type="module" src="assets/js/pages/leaderboard.js"></script>
+</body>
+</html>

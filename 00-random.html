@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>0 · 사람은 난수를 못 만든다 · 가짜 주식시장</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="random">
+<main class="shell">
+  <div data-page-head data-weapon="전체 게임 · 10분 + 정리 10분"></div>
+
+  <div class="callout question"><p class="eyebrow">시작 질문</p><strong>동전을 던진 것처럼 보이게 손으로 앞/뒤 30개를 적으면, 검사는 그것을 진짜 동전과 구별할 수 있을까?</strong><p class="small muted">팀 예상을 먼저 정하세요: 구별할 수 있다 / 없다. 그리고 왜.</p></div>
+
+  <section class="grid two">
+    <div class="card">
+      <p class="eyebrow">A · 손으로 쓴 수열</p>
+      <h3>동전 없이, 머리로만 30개</h3>
+      <p class="small muted">아래 버튼을 눌러 H(앞)/T(뒤)를 하나씩 입력하세요. 최대한 "무작위처럼" 보이게 적는 것이 목표입니다.</p>
+      <div class="choice-row" style="margin:.4rem 0"><button class="choice" type="button" data-add="H">H 앞</button><button class="choice" type="button" data-add="T">T 뒤</button><button class="button small" type="button" data-undo>← 지우기</button><button class="button small" type="button" data-clear>초기화</button></div>
+      <div class="seq" data-seq-human></div>
+      <p class="small muted"><span data-count-human>0</span> / 30</p>
+    </div>
+    <div class="card">
+      <p class="eyebrow">B · 진짜 동전</p>
+      <h3>난수 생성기가 던진 30개</h3>
+      <p class="small muted">실제 동전을 던져 적어도 됩니다. 같은 시드는 같은 결과를 만들고, 시드를 바꾸면 다른 동전이 나옵니다.</p>
+      <div class="actions"><button class="button" type="button" data-flip>동전 30번 던지기</button><label style="margin:0" class="small">시드 <input type="number" data-seed value="10" style="width:90px;display:inline-block"></label></div>
+      <div class="seq" data-seq-coin></div>
+    </div>
+  </section>
+
+  <section class="section card highlight">
+    <div class="section-head"><div><p class="eyebrow">검사</p><h2>어느 쪽이 사람인가?</h2></div><div class="actions"><button class="button primary" type="button" id="analyze">이번 판 판정</button><button class="button hidden" type="button" id="retry">다음 판 추가</button><button class="button small hidden" type="button" id="reset-series">누적 기록 초기화</button></div></div>
+    <p class="small muted" id="round-prompt">먼저 수열을 완성해 판정하세요. 검사 규칙은 첫 제출 뒤 공개됩니다.</p>
+    <p class="small muted hidden" id="detector-rules">검사는 네 가지를 함께 봅니다. ① <strong>연속 묶음 수(runs)</strong>와 길이 1짜리 run의 비율, ② <strong>가장 긴 run 하나가 아니라 상위 3개의 분포</strong>, ③ <strong>앞·뒤 균형</strong>, ④ <strong>같은 팀이 여러 판에서 남긴 누적 증거</strong>입니다. 긴 run이 주는 ‘동전다움’ 이득에는 상한이 있고, 9개 안팎의 극단적인 run은 다시 의심 신호가 됩니다. 한 판의 영향도 제한해 의도적으로 만든 한 수열이 전체 판정을 지배하지 못하게 합니다.</p>
+    <div class="grid two" id="analysis"></div>
+    <div id="verdict" class="status hidden"></div>
+    <div class="card soft hidden" id="series" style="margin-top:.8rem">
+      <div class="section-head"><div><p class="eyebrow">같은 팀 누적 판정</p><h3>한 판보다 여러 판</h3></div></div>
+      <div class="grid three">
+        <div class="stat"><span class="number" id="human-probability">50%</span><span class="label">사람 수열 누적 추정확률</span></div>
+        <div class="stat"><span class="number" id="round-count">0 / 5</span><span class="label">완료한 판 · 3판 권장</span></div>
+        <div class="stat"><span class="number">±1.10</span><span class="label">한 판이 줄 수 있는 최대 근거</span></div>
+      </div>
+      <p class="small" id="series-summary"></p>
+      <div class="table-wrap"><table><thead><tr><th>판</th><th class="num">내 지수</th><th class="num">동전 지수</th><th class="num">제한된 근거</th><th class="num">누적 확률</th></tr></thead><tbody id="round-history"></tbody></table></div>
+      <p class="small muted">확률은 공정한 동전과 수업용 인간 행동 모형을 비교하고 각 판을 별도 증거로 취급한 내부 추정값입니다. 실제 신원 확률이나 검증된 진단 정확도가 아닙니다.</p>
+    </div>
+  </section>
+
+  <section class="section grid two">
+    <div class="card soft">
+      <p class="eyebrow">정리</p>
+      <h3>오늘 하루의 규칙</h3>
+      <ul class="small">
+        <li><strong>진짜처럼 보이는 것 ≠ 진짜.</strong> 그리고 그 차이는 검사로 드러난다.</li>
+        <li>여러분은 하루 종일 두 역할을 번갈아 맡는다: <strong>생성자</strong>(가짜를 만든다)와 <strong>판별자</strong>(가짜를 잡는다).</li>
+        <li>판별할 때는 항상 <strong>선택한 답의 확률</strong>을 함께 낸다. 나머지는 두 후보에 균등 배분해 3범주 Brier loss를 계산한다 — 확신하고 틀리면 가장 아프다.</li>
+        <li>1946년 울람이 솔리테어 확률을 못 풀어 "그냥 여러 번 해보자"고 한 것이 몬테카를로의 시작. 오늘 만드는 모든 가짜 시장은 그 방법의 후손이다.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <p class="eyebrow">팀 기록</p>
+      <div class="field"><label for="predict">실행 전 예상 (구별할 수 있다 / 없다, 이유)</label><textarea id="predict"></textarea></div>
+      <div class="field"><label for="learned">실행 후 — 예상과 달랐던 점</label><textarea id="learned"></textarea></div>
+      <div class="actions"><button class="button" type="button" id="save">저장</button><span id="save-status" class="small muted"></span></div>
+    </div>
+  </section>
+
+  <nav data-page-nav></nav>
+</main>
+<script type="module" src="assets/js/pages/random.js"></script>
+</body>
+</html>
